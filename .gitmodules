@@ -1,0 +1,9 @@
+[submodule "common/eaas-emucon-tools/emucon-tools"]
+	path = common/eaas-emucon-tools/emucon-tools
+	url = git@gitlab.com:openslx/emucon-tools.git
+[submodule "common/eaas-disktype/disktype_json"]
+	path = common/eaas-disktype/disktype_json
+	url = git@github.com:OpenSLX/disktype_json.git
+[submodule "common/eaas-picotcp/picotcp"]
+	path = common/eaas-picotcp/picotcp
+	url = https://git.eaas.uni-freiburg.de/rafaelgieschke/picotcp.git

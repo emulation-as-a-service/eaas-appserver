@@ -1,0 +1,10 @@
+#!/bin/bash
+if [ -e /dev/fuse ]
+then
+	chown root:fuse /dev/fuse
+fi
+
+if [ -e /dev/kvm ]
+then
+	chmod 777 /dev/kvm
+fi

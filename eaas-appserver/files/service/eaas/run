@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if [ ! -d "/home/bwfla/log" ]; then
+  /sbin/setuser bwfla mkdir -p /home/bwfla/log
+fi
+
+if [ "$SSL_PROXY" == "true" ]; then
+        if [ -z "$EAAS_PROXYPORT" ]; then
+                EAAS_PROXYPORT=443
+        fi
+        SSL_DEFINES="-Deaas.urischeme=https -Deaas.proxyport=$EAAS_PROXYPORT"
+else
+        if [ -z "$EAAS_PROXYPORT" ]; then
+                EAAS_PROXYPORT=8080
+        fi
+        SSL_DEFINES="-Deaas.urischeme=http -Deaas.proxyport=$EAAS_PROXYPORT"
+fi
+
+exec /sbin/setuser bwfla /home/bwfla/bw-fla-server/bin/standalone.sh $SSL_DEFINES -bmanagement=0.0.0.0 >> /home/bwfla/log/eaas.log 2>&1
+
+

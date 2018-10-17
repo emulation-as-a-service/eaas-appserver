@@ -1,0 +1,14 @@
+#!/bin/bash
+
+. /home/bwfla/.bwFLA/dns-env
+
+export PDNS_Url="$DNSSERVER"
+export PDNS_ServerId="localhost"
+export PDNS_Token="$APIKEY"
+export PDNS_Ttl=60
+export Le_DNSSleep=5
+export DEPLOY_NGHTTPX_RELOAD="/libexec/update-nghttpx"
+
+export LE_CONFIG_HOME="/home/bwfla/server-data/acme.sh"
+/usr/local/acme.sh/acme.sh --dns dns_pdns --deploy-hook nghttpx --issue -d "$DOMAIN"
+/usr/local/acme.sh/acme.sh --dns dns_pdns --deploy-hook nghttpx --deploy -d "$DOMAIN"

@@ -1,0 +1,29 @@
+version: '3.2'
+services:
+  picotcp:
+    image: eaas/picotcp
+    build: common/eaas-picotcp
+  disktype:
+    image: eaas/disktype
+    build: common/eaas-disktype
+  emucon-tools:
+    image: eaas/emucon-tools
+    build: common/eaas-emucon-tools
+  criu:
+    image: eaas/criu
+    build: common/eaas-criu
+  base:
+    image: eaas/eaas-base
+    build: eaas-base
+    depends_on:
+      - picotcp
+      - disktype
+      - emucon-tools
+      - criu
+  eaas-appserver:
+    image: eaas/eaas-appserver
+    build: eaas-appserver
+    depends_on:
+      - base
+
+    
