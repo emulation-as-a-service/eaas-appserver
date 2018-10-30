@@ -25,5 +25,9 @@ services:
     build: eaas-appserver
     depends_on:
       - base
+  citar:
+    image: eaas/citar
+    build: citar-container
+    depends_on:
+      - base
 
-    
