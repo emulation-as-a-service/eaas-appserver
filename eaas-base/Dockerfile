@@ -11,6 +11,9 @@ RUN apt-get update && apt-get upgrade -y
 COPY files/bwfla.list /etc/apt/sources.list.d/bwfla.list
 COPY files/pin-bwfla.pref /etc/apt/preferences.d/pin-bwfla.pref
 
+run echo "deb http://nginx.org/packages/ubuntu/ xenial nginx" > /etc/apt/sources.list.d/nginx.list
+COPY files/pin-nginx.pref /etc/apt/preferences.d/pin-nginx.pref
+
 # add xpra repo
 run curl http://winswitch.org/gpg.asc | apt-key add -
 run apt-key adv --keyserver keys.gnupg.net --recv-keys F18AD6BB
@@ -91,11 +94,11 @@ libprotobuf-dev libprotobuf-c0-dev protobuf-c-compiler protobuf-compiler python-
 xpra \
 socat \
 mongodb-org \
-siegfried
+siegfried \
+nginx=1.12.0-1~xenial
  
-
 RUN pip install python-uinput
-RUN pip install neovim-gui
+#RUN pip install neovim-gui
 
 RUN sed -i 's/#user_allow_other/user_allow_other/' /etc/fuse.conf
 
@@ -174,7 +177,10 @@ ENV PATH="/home/bwfla/emucon-tools/runtime/bin/:${PATH}"
 RUN /home/bwfla/emucon-tools/install.sh --destination /usr/local -u bwfla \
     &&  /home/bwfla/emucon-tools/installer/install-deps.sh
 
-#ADD https://www.nationalarchives.gov.uk/documents/DROID_SignatureFile_V93.xml /eaas/pronom/DROID_SignatureFile.xml
-#RUN chmod 755 /eaas/pronom/DROID_SignatureFile.xml
+ADD https://www.nationalarchives.gov.uk/documents/DROID_SignatureFile_V93.xml /eaas/pronom/DROID_SignatureFile.xml
+RUN chmod 755 /eaas/pronom/DROID_SignatureFile.xml
 
 add files/defaults /home/bwfla/defaults
+
+copy files/nginx/proxy /etc/nginx/conf.d/proxy.conf
+run rm /etc/nginx/conf.d/default.conf

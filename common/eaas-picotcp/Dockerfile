@@ -14,3 +14,6 @@ workdir /libexec/picotcp/webemulator/webemulator
 run npm install
 run npm run build
 run cp ./eaas-proxy /libexec/vdenode
+run mkdir /download/
+run cp ./eaas-proxy.exe /download/
+run cp ./eaas-proxy.app.zip /download/
