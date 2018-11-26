@@ -1,4 +1,4 @@
 #!/bin/bash
 su - bwfla
 mkdir -p /home/bwfla/server-data/db
-exec /usr/bin/mongod --dbpath /eaas/server-data/db
+exec /usr/bin/mongod --dbpath /eaas/server-data/db --smallfiles
