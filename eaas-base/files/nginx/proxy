@@ -1,0 +1,25 @@
+proxy_cache_path /tmp/mycache keys_zone=mycache:1000m;
+
+server {
+    listen       8888;
+ 
+    proxy_cache mycache;
+    slice              1m;
+    proxy_cache_key    $host$uri$slice_range;
+    proxy_set_header   Range $slice_range;
+    proxy_http_version 1.1;
+    proxy_cache_valid  200 206 1h;
+    
+    location / {
+        resolver 8.8.8.8; # may or may not be necessary.
+        proxy_pass http://$http_host$uri$is_args$args;
+        proxy_intercept_errors on;
+        error_page 302 303 = @handler;
+    }
+
+    location @handler {
+        resolver 8.8.8.8; # may or may not be necessary.
+        set $saved_redirect_location '$upstream_http_location';
+        proxy_pass $saved_redirect_location;
+    }
+}

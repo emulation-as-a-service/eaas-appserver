@@ -95,7 +95,9 @@ xpra \
 socat \
 mongodb-org \
 siegfried \
-nginx=1.12.0-1~xenial
+nginx=1.12.0-1~xenial \
+libguestfs-tools \
+linux-image-generic
  
 RUN pip install python-uinput
 #RUN pip install neovim-gui
@@ -184,3 +186,5 @@ add files/defaults /home/bwfla/defaults
 
 copy files/nginx/proxy /etc/nginx/conf.d/proxy.conf
 run rm /etc/nginx/conf.d/default.conf
+
+run chmod -R 777 /boot
