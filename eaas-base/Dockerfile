@@ -98,7 +98,10 @@ siegfried \
 nginx=1.12.0-1~xenial \
 libguestfs-tools \
 linux-image-generic
- 
+
+#VisualBoy is installed in differnt layer, because the previous step is too big for docker to handle
+RUN apt-get install visualboyadvance
+
 RUN pip install python-uinput
 #RUN pip install neovim-gui
 
