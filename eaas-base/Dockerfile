@@ -21,6 +21,8 @@ run echo "deb http://winswitch.org/ xenial main" > /etc/apt/sources.list.d/winsw
 run apt-add-repository ppa:fengestad/stable
 
 #mongo
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
+RUN echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | tee /etc/apt/sources.list.d/mongodb.list
 
 #siegfried
 run echo "deb http://dl.bintray.com/siegfried/debian wheezy main" | tee -a /etc/apt/sources.list
