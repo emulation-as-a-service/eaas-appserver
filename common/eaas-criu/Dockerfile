@@ -26,10 +26,10 @@ RUN apt-get update && apt-get install -y \
                 $CC
 
 run mkdir /criu
-add https://github.com/checkpoint-restore/criu/archive/v3.10.tar.gz /criu
+add https://github.com/checkpoint-restore/criu/archive/v3.11.tar.gz /criu
 WORKDIR /criu
-RUN tar -xf v3.10.tar.gz
-WORKDIR /criu/criu-3.10
+RUN tar -xf v3.11.tar.gz
+WORKDIR /criu/criu-3.11
 
 ENV CC="ccache $CC" CCACHE_DIR=/tmp/.ccache CCACHE_NOCOMPRESS=1 $ENV1=yes
 
@@ -40,5 +40,5 @@ RUN make mrproper && ccache -s && \
         make -j $(nproc) CC="$CC" && \
         date 
 
-RUN cp /criu/criu-3.10/criu/criu /usr/local/bin/criu
+RUN cp /criu/criu-3.11/criu/criu /usr/local/bin/criu
 

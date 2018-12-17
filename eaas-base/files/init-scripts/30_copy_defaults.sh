@@ -5,7 +5,7 @@ if [ ! -e /home/bwfla/server-data/operating-systems.json ]; then
 fi
 
 if [ -e /home/bwfla/defaults/templates ]; then
-   mkdir -p /home/bwfla/image-archive/meta-data/template
+   mkdir -vp /home/bwfla/image-archive/meta-data/template
    cp -vr /home/bwfla/defaults/templates/* /home/bwfla/image-archive/meta-data/template
 fi
 

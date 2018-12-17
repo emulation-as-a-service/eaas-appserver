@@ -21,11 +21,12 @@ run echo "deb http://winswitch.org/ xenial main" > /etc/apt/sources.list.d/winsw
 run apt-add-repository ppa:fengestad/stable
 
 #mongo
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
-RUN echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | tee /etc/apt/sources.list.d/mongodb.list
 
 #siegfried
 run echo "deb http://dl.bintray.com/siegfried/debian wheezy main" | tee -a /etc/apt/sources.list
+RUN add-apt-repository ppa:projectatomic/ppa
+
+RUN rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes \
 bindfs \
@@ -96,8 +97,10 @@ socat \
 mongodb-org \
 siegfried \
 nginx=1.12.0-1~xenial \
-libguestfs-tools \
-linux-image-generic
+skopeo \ 
+wget jq bsdtar squashfs-tools  libgpgme11-dev libassuan-dev btrfs-tools libdevmapper-dev git pkg-config libglib2.0-dev -y && apt-get clean && apt-get autoremove
+#libguestfs-tools \
+#linux-image-generic \
  
 RUN pip install python-uinput
 #RUN pip install neovim-gui
@@ -133,6 +136,9 @@ COPY files/libexec/ /libexec/
 
 # copy tools and scripts
 COPY files/binaries/ /usr/bin/
+
+#lklfuse
+copy --from=registry.gitlab.com/emulation-as-a-service/lklfuse /opt/lkl/lklfuse /usr/bin/
 
 COPY files/lib/ /usr/local/lib/
 
