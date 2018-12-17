@@ -100,9 +100,12 @@ nginx=1.12.0-1~xenial \
 skopeo \ 
 wget jq bsdtar squashfs-tools  libgpgme11-dev libassuan-dev btrfs-tools libdevmapper-dev git pkg-config libglib2.0-dev -y && apt-get clean && apt-get autoremove
 #libguestfs-tools \
-#linux-image-generic \
- 
-RUN pip install python-uinput
+#linux-image-generic 
+
+#VisualBoy is installed in differnt layer, because the previous step is too big for docker to handle
+RUN apt-get install visualboyadvance
+
+RUN pip install python-uinput 
 #RUN pip install neovim-gui
 
 RUN sed -i 's/#user_allow_other/user_allow_other/' /etc/fuse.conf
