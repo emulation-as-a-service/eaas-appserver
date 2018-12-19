@@ -1,3 +1,2 @@
 #!/bin/bash
-su - bwfla
 exec /usr/bin/mongod --dbpath /home/bwfla/server-data/db --smallfiles
