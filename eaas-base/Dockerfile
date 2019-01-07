@@ -144,11 +144,13 @@ COPY files/binaries/ /usr/bin/
 
 #lklfuse
 copy --from=registry.gitlab.com/emulation-as-a-service/lklfuse /opt/lkl/lklfuse /usr/bin/
+#copy --from=registry.gitlab.com/emulation-as-a-service/lklfuse:chown-symlink /opt/lkl/lklfuse /usr/bin/
 
 COPY files/lib/ /usr/local/lib/
 
+RUN useradd -ms /bin/bash bwfla && for grp in disk audio plugdev kvm xpra; do adduser bwfla $grp; done
 RUN addgroup fuse 
-RUN useradd -ms /bin/bash bwfla && for grp in fuse disk audio plugdev kvm xpra; do adduser bwfla $grp; done
+RUN adduser bwfla fuse
 
 run chown bwfla:bwfla /home/bwfla
 

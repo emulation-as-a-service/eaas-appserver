@@ -1,2 +1,2 @@
 #!/bin/bash
-exec /usr/bin/mongod --dbpath /home/bwfla/server-data/db --smallfiles
+exec /usr/bin/mongod --dbpath /eaas/server-data/db --smallfiles
