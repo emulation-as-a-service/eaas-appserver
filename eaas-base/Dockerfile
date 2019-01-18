@@ -148,9 +148,9 @@ copy --from=registry.gitlab.com/emulation-as-a-service/lklfuse /opt/lkl/lklfuse 
 
 COPY files/lib/ /usr/local/lib/
 
-RUN useradd -ms /bin/bash bwfla && for grp in disk audio plugdev kvm xpra; do adduser bwfla $grp; done
-RUN addgroup fuse 
-RUN adduser bwfla fuse
+RUN addgroup --gid 1000 bwfla
+RUN addgroup fuse
+RUN useradd -ms /bin/bash --uid 1000 --gid bwfla bwfla && for grp in fuse disk audio plugdev kvm xpra; do adduser bwfla $grp; done
 
 run chown bwfla:bwfla /home/bwfla
 
