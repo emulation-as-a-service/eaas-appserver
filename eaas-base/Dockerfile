@@ -14,10 +14,6 @@ COPY files/pin-bwfla.pref /etc/apt/preferences.d/pin-bwfla.pref
 run echo "deb http://nginx.org/packages/ubuntu/ xenial nginx" > /etc/apt/sources.list.d/nginx.list
 COPY files/pin-nginx.pref /etc/apt/preferences.d/pin-nginx.pref
 
-# add xpra repo
-run curl http://winswitch.org/gpg.asc | apt-key add -
-run apt-key adv --keyserver keys.gnupg.net --recv-keys F18AD6BB
-run echo "deb http://winswitch.org/ xenial main" > /etc/apt/sources.list.d/winswitch.list
 run apt-add-repository ppa:fengestad/stable
 
 #mongo
@@ -107,7 +103,6 @@ wget jq bsdtar squashfs-tools  libgpgme11-dev libassuan-dev btrfs-tools libdevma
 #VisualBoy is installed in differnt layer, because the previous step is too big for docker to handle
 RUN apt-get install visualboyadvance
 
-RUN pip install python-uinput 
 #RUN pip install neovim-gui
 
 RUN sed -i 's/#user_allow_other/user_allow_other/' /etc/fuse.conf
@@ -150,7 +145,7 @@ COPY files/lib/ /usr/local/lib/
 
 RUN addgroup --gid 1000 bwfla
 RUN addgroup fuse
-RUN useradd -ms /bin/bash --uid 1000 --gid bwfla bwfla && for grp in fuse disk audio plugdev kvm xpra; do adduser bwfla $grp; done
+RUN useradd -ms /bin/bash --uid 1000 --gid bwfla bwfla && for grp in fuse disk audio plugdev kvm; do adduser bwfla $grp; done
 
 run chown bwfla:bwfla /home/bwfla
 

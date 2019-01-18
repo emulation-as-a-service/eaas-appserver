@@ -15,6 +15,7 @@ services:
   base:
     image: eaas/eaas-base
     build: eaas-base
+    tty: true
     depends_on:
       - picotcp
       - disktype
