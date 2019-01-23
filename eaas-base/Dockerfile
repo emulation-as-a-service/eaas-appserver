@@ -90,7 +90,6 @@ jq \
 git \
 openjdk-8-jre-headless \
 libprotobuf-dev libprotobuf-c0-dev protobuf-c-compiler protobuf-compiler python-protobuf libnl-3-dev libnet-dev \
-xpra \
 socat \
 mongodb-org \
 siegfried \
