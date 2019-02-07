@@ -12,6 +12,9 @@ services:
   criu:
     image: eaas/criu
     build: common/eaas-criu
+  netfilter:
+    image: eaas/netfilter
+    build: common/netfilter
   base:
     image: eaas/eaas-base
     build: eaas-base
@@ -21,6 +24,7 @@ services:
       - disktype
       - emucon-tools
       - criu
+      - netfilter
   eaas-appserver:
     image: eaas/eaas-appserver
     build: eaas-appserver

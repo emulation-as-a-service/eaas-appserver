@@ -181,6 +181,7 @@ COPY --from=eaas/disktype /disktype_json/src/disktype /usr/local/bin
 COPY --from=eaas/emucon-tools /emucon-output /usr/local
 COPY --from=eaas/criu /usr/local/bin/criu /usr/local/bin
 COPY --from=eaas/emucon-tools /emucon-tools /home/bwfla/emucon-tools
+COPY --from=eaas/netfilter /out /usr
 
 ENV PATH="/home/bwfla/emucon-tools/runtime/bin/:${PATH}"
 RUN /home/bwfla/emucon-tools/install.sh --destination /usr/local -u bwfla \
