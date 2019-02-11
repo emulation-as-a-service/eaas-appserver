@@ -1,0 +1,9 @@
+image: docker/compose
+services:
+- docker:dind
+variables:
+ GIT_SUBMODULE_STRATEGY: recursive
+
+build:
+  script:
+  - docker-compose build
