@@ -1,6 +1,6 @@
 image: 
  name: docker/compose:1.24.0-rc1
- entrypoint: [""]
+ entrypoint: ["/bin/sh", "-c"]
 services:
 - docker:dind
 variables:
@@ -8,6 +8,5 @@ variables:
  
 
 build:
-  entrypoint: []
   script:
   - docker-compose build
