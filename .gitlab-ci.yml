@@ -1,5 +1,5 @@
 image: 
- name: docker/compose:1.24.0-rc1
+ name: docker
  entrypoint: ["/bin/sh", "-c"]
 services:
 - docker:dind
@@ -9,5 +9,7 @@ variables:
 
 build:
   script:
-  - apt-get install sudo -y
+  - apt-get install sudo curl -y
+  - sudo curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+  - sudo chmod +x /usr/local/bin/docker-compose
   - sudo docker-compose build
