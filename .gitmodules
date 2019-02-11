@@ -1,6 +1,6 @@
 [submodule "common/eaas-emucon-tools/emucon-tools"]
 	path = common/eaas-emucon-tools/emucon-tools
-	url = git@gitlab.com:openslx/emucon-tools.git
+	url = https://gitlab.com/openslx/emucon-tools.git
 [submodule "common/eaas-disktype/disktype_json"]
 	path = common/eaas-disktype/disktype_json
 	url = https://github.com/OpenSLX/disktype_json.git
