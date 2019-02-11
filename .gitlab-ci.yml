@@ -1,4 +1,6 @@
-image: docker/compose:1.24.0-rc1
+image: 
+ name: docker/compose:1.24.0-rc1
+ entrypoint: [""]
 services:
 - docker:dind
 variables:
