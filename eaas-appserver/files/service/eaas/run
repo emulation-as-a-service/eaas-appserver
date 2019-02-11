@@ -20,6 +20,10 @@ fi
 #       standlone.sh will not be able to shutdown it cleanly!
 export LAUNCH_JBOSS_IN_BACKGROUND='true'
 
-exec /sbin/setuser bwfla /home/bwfla/bw-fla-server/bin/standalone.sh $SSL_DEFINES -bmanagement=0.0.0.0 >> /home/bwfla/log/eaas.log 2>&1
+if [ "$RUN_AS_ROOT" == "true" ]; then
+	exec /home/bwfla/bw-fla-server/bin/standalone.sh $SSL_DEFINES -bmanagement=0.0.0.0 >> /home/bwfla/log/eaas.log 2>&1
+else 
+	exec /sbin/setuser bwfla /home/bwfla/bw-fla-server/bin/standalone.sh $SSL_DEFINES -bmanagement=0.0.0.0 >> /home/bwfla/log/eaas.log 2>&1
+fi
 
 
