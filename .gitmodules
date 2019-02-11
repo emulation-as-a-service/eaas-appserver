@@ -4,9 +4,9 @@
 [submodule "common/eaas-disktype/disktype_json"]
 	path = common/eaas-disktype/disktype_json
 	url = https://github.com/OpenSLX/disktype_json.git
-[submodule "common/eaas-picotcp/picotcp"]
-	path = common/eaas-picotcp/picotcp
-	url = https://git.eaas.uni-freiburg.de/rafaelgieschke/picotcp.git
 [submodule "citar-container"]
 	path = citar-container
 	url = https://gitlab.com/CiTAR/citar-container.git
+[submodule "common/eaas-picotcp/picotcp"]
+	path = common/eaas-picotcp/picotcp
+	url = https://gitlab.com/emulation-as-a-service/eaas-proxy
