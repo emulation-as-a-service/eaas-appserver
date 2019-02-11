@@ -10,7 +10,7 @@ nodejs zip
 
 add picotcp /libexec/picotcp
 run rm -rf /libexec/picotcp/.git
-workdir /libexec/picotcp/webemulator/webemulator
+workdir /libexec/picotcp
 run npm install
 run npm run build
 run cp ./eaas-proxy /libexec/vdenode
