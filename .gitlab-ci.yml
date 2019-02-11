@@ -3,7 +3,9 @@ services:
 - docker:dind
 variables:
  GIT_SUBMODULE_STRATEGY: recursive
+ 
 
 build:
+  entrypoint: []
   script:
   - docker-compose build
