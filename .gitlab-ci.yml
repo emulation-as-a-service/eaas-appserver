@@ -9,3 +9,5 @@ variables:
 build:
   script:
   - docker-compose build
+  - echo $DOCKER_PASS | docker login -u$DOCKER_LOGIN --password-stdin $DOCKER_HOST
+  - docker push eaas/citar
