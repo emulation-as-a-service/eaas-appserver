@@ -9,4 +9,5 @@ variables:
 
 build:
   script:
+  - apt-get install sudo -y
   - sudo docker-compose build
