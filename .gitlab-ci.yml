@@ -11,3 +11,7 @@ build:
   - docker-compose build
   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "docker.io"
   - docker push "eaas/citar"
+  
+trigger:
+  stage: deploy
+  trigger: openslx/emucomp-image-builder
