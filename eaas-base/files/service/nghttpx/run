@@ -1,9 +1,21 @@
 #!/bin/bash
 
-if ! test -f "/etc/nghttpx/server.crt"; then
+user_crt='/eaas/certificates/server.crt'
+user_key='/eaas/certificates/server.key'
+
+dstdir='/etc/nghttpx'
+server_crt="${dstdir}/server.crt"
+server_key="${dstdir}/server.key"
+
+mkdir -p "${dstdir}"
+
+if test -f "${user_crt}"; then
+  cp "${user_crt}" "${server_crt}"
+  cp "${user_key}" "${server_key}"
+elif ! test -f "${server_crt}"; then
   openssl req -x509 -subj "/" -newkey rsa:4096 -days 10000 -nodes \
-    -keyout "/etc/nghttpx/server.key" \
-    -out "/etc/nghttpx/server.crt" \
+    -keyout "${server_key}" \
+    -out "${server_crt}" \
     -reqexts SAN \
     -extensions SAN \
     -config <(cat /etc/ssl/openssl.cnf; \
