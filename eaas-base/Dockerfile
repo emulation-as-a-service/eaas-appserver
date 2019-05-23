@@ -3,7 +3,6 @@
 
 FROM phusion/baseimage:0.9.22
 CMD ["/sbin/my_init"]
-EXPOSE 80
 
 RUN apt-get update && apt-get upgrade -y
 
@@ -197,3 +196,24 @@ copy files/nginx/proxy /etc/nginx/conf.d/proxy.conf
 run rm /etc/nginx/conf.d/default.conf
 
 run chmod -R 777 /boot
+
+COPY --from=eaas/vde /out /tmp
+RUN dpkg -i /tmp/*.deb
+
+run curl ftp://ftp.netfilter.org/pub/iptables/iptables-1.8.2.tar.bz2 -o /tmp/iptables-1.8.2.tar.bz2
+workdir /tmp
+run tar xf iptables-1.8.2.tar.bz2
+workdir iptables-1.8.2
+run ./configure     --prefix=/out     --mandir=/usr/man  --disable-nftables
+run make
+run make install
+
+#add https://gitlab.com/emulation-as-a-service/experiments/fake-clock/-/jobs/164758264/artifacts/raw/LD_PRELOAD_clock_gettime.so /usr/local/lib/
+
+RUN git clone https://gitlab.com/emulation-as-a-service/experiments/fake-clock.git /fake-clock
+workdir /fake-clock
+run make
+run cp LD_PRELOAD_clock_gettime.so /usr/local/lib/
+workdir /
+
+
