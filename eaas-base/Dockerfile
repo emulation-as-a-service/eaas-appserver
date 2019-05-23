@@ -10,9 +10,6 @@ RUN apt-get update && apt-get upgrade -y
 COPY files/bwfla.list /etc/apt/sources.list.d/bwfla.list
 COPY files/pin-bwfla.pref /etc/apt/preferences.d/pin-bwfla.pref
 
-run echo "deb http://nginx.org/packages/ubuntu/ xenial nginx" > /etc/apt/sources.list.d/nginx.list
-COPY files/pin-nginx.pref /etc/apt/preferences.d/pin-nginx.pref
-
 run apt-add-repository ppa:fengestad/stable
 
 #mongo
@@ -93,7 +90,6 @@ libprotobuf-dev libprotobuf-c0-dev protobuf-c-compiler protobuf-compiler python-
 socat \
 mongodb-org \
 siegfried \
-nginx=1.12.0-1~xenial \
 skopeo \ 
 wget jq bsdtar squashfs-tools  libgpgme11-dev libassuan-dev btrfs-tools libdevmapper-dev git pkg-config libglib2.0-dev -y && apt-get clean && apt-get autoremove
 #libguestfs-tools \
@@ -191,9 +187,6 @@ ADD https://www.nationalarchives.gov.uk/documents/DROID_SignatureFile_V93.xml /e
 RUN chmod 755 /eaas/pronom/DROID_SignatureFile.xml
 
 add files/defaults /home/bwfla/defaults
-
-copy files/nginx/proxy /etc/nginx/conf.d/proxy.conf
-run rm /etc/nginx/conf.d/default.conf
 
 run chmod -R 777 /boot
 
