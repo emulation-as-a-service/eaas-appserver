@@ -34,6 +34,11 @@ services:
     build: eaas-appserver
     depends_on:
       - base
+
+  eaas-proxy:
+    image: eaas/eaas-proxy
+    build: proxy-container
+
   citar:
     image: eaas/citar
     build: citar-container
