@@ -1,59 +1,38 @@
-# create eaas-base 
+# create eaas-base
 # using: https://github.com/phusion/baseimage-docker
 
-FROM phusion/baseimage:0.9.22
+FROM phusion/baseimage:0.11
 CMD ["/sbin/my_init"]
 EXPOSE 80
 
 RUN apt-get update && apt-get upgrade -y
 
 ## init bwfla repo
-COPY files/bwfla.list /etc/apt/sources.list.d/bwfla.list
-COPY files/pin-bwfla.pref /etc/apt/preferences.d/pin-bwfla.pref
+#COPY files/bwfla.list /etc/apt/sources.list.d/bwfla.list
+#COPY files/pin-bwfla.pref /etc/apt/preferences.d/pin-bwfla.pref
 
-run echo "deb http://nginx.org/packages/ubuntu/ xenial nginx" > /etc/apt/sources.list.d/nginx.list
-COPY files/pin-nginx.pref /etc/apt/preferences.d/pin-nginx.pref
+#RUN echo "deb http://nginx.org/packages/ubuntu/ xenial nginx" > /etc/apt/sources.list.d/nginx.list
+#COPY files/pin-nginx.pref /etc/apt/preferences.d/pin-nginx.pref
 
-run apt-add-repository ppa:fengestad/stable
-
-#mongo
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
-RUN echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | tee /etc/apt/sources.list.d/mongodb.list
+#run apt-add-repository ppa:fengestad/stable
 
 #siegfried
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 379CE192D401AB61
 run echo "deb http://dl.bintray.com/siegfried/debian wheezy main" | tee -a /etc/apt/sources.list
+
 RUN add-apt-repository ppa:projectatomic/ppa
 
 RUN rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes \
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated \
 bindfs \
-hatari \
-beebem \
-kegs-sdl \
-vice-sdl \
-basilisk2 \
-pce-atari-st \
-pce-atari-st-data \
-pce-dos \
-pce-ibmpc \
-pce-ibmpc-data \
-pce-macplus \
-pce-macplus-data \
-pce-utils \
-dosbox \
-guacd \
-libguac-client-sdlonp0 \
-libsdl1.2debian \
+#guacd \
 qemu-utils \
-qemu-system-x86 \
-qemu-system-ppc \
-sheepshaver \
-libcurl3 \
-libcurl3-gnutls \
+libcurl4 \
+#libcurl3-gnutls \
 qemu-block-extra \
-xmount \
-libxmount-input-qemu \
+#xmount \
+#libxmount-input-qemu \
 debconf-utils \
 pmount \
 mkisofs \
@@ -66,44 +45,46 @@ hfsprogs \
 cabextract \
 chntpw \
 zip \
-fs-uae \
-fs-uae-launcher \
-fs-uae-arcade \
 apache2 \
 libfaketime \
 vde2 \
-dbus-x11 \
-python-pip \
-python-dev \
-build-essential \
-python3-gi \
-python3-click \
-python3-gi-cairo \
-python3-cairo \
-gir1.2-gtk-3.0 \
-python-netifaces \
-python-avahi \
-nghttp2-proxy \ 
-pulseaudio \
+#dbus-x11 \
+#python-pip \
+#python-dev \
+#build-essential \
+#python3-gi \
+#python3-click \
+#python3-gi-cairo \
+#python3-cairo \
+#gir1.2-gtk-3.0 \
+#python-netifaces \
+#python-avahi \
+nghttp2-proxy \
+#pulseaudio \
 sudo \
 jq \
 git \
-ghostscript \
+#ghostscript \
 openjdk-8-jre-headless \
-libprotobuf-dev libprotobuf-c0-dev protobuf-c-compiler protobuf-compiler python-protobuf libnl-3-dev libnet-dev \
+#libprotobuf-dev libprotobuf-c0-dev protobuf-c-compiler protobuf-compiler python-protobuf libnl-3-dev libnet-dev \
 socat \
-mongodb-org \
+mongodb \
 siegfried \
-nginx=1.12.0-1~xenial \
-skopeo \ 
-wget jq bsdtar squashfs-tools  libgpgme11-dev libassuan-dev btrfs-tools libdevmapper-dev git pkg-config libglib2.0-dev -y && apt-get clean && apt-get autoremove
-#libguestfs-tools \
-#linux-image-generic 
+skopeo \
+wget \
+#bsdtar \
+squashfs-tools \
+libgstreamer1.0-0 \
+gstreamer1.0-plugins-base \
+gstreamer1.0-plugins-good \
+gstreamer1.0-plugins-bad \
+gstreamer1.0-tools \
+gstreamer1.0-pulseaudio \
+#libgpgme11-dev libassuan-dev btrfs-tools libdevmapper-dev git pkg-config libglib2.0-dev \
+    && apt-get clean && apt-get autoremove
 
-#VisualBoy is installed in differnt layer, because the previous step is too big for docker to handle
-RUN apt-get install visualboyadvance
 
-#RUN pip install neovim-gui
+# libgstreamer1.0-0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-tools gstreamer1.0-pulseaudio \
 
 RUN sed -i 's/#user_allow_other/user_allow_other/' /etc/fuse.conf
 
@@ -111,9 +92,6 @@ RUN rm -rf /usr/lib/xmount/libxmount_input_aff.so
 
 ## prepare the system to host sheepshaver
 COPY files/init-scripts/ /etc/my_init.d/
-
-add files/vice-data/opt /opt
-add files/amiga /opt/amiga
 
 # allow loop devices to be mounted by users
 #COPY files/pmount.allow /etc/pmount.allow
@@ -145,7 +123,7 @@ COPY files/lib/ /usr/local/lib/
 
 RUN addgroup --gid 1000 bwfla
 RUN addgroup fuse
-RUN useradd -ms /bin/bash --uid 1000 --gid bwfla bwfla && for grp in fuse disk audio plugdev kvm; do adduser bwfla $grp; done
+RUN useradd -ms /bin/bash --uid 1000 --gid bwfla bwfla && for grp in fuse disk audio plugdev; do adduser bwfla $grp; done
 
 run chown bwfla:bwfla /home/bwfla
 
@@ -165,7 +143,7 @@ USER root
 
 run mkdir -p /eaas 	\
 /eaas/pronom		\
-/eaas/roms			
+/eaas/roms
 
 RUN \
   cd /tmp && \
@@ -176,6 +154,10 @@ RUN \
   ./acme.sh --install --home /usr/local/acme.sh --config-home /eaas/server-data/acme.sh && \
   chmod +rx /usr/local/acme.sh/ && \
   chown -R bwfla:bwfla /eaas/server-data/acme.sh
+
+RUN cd /usr/local/bin && \
+    curl -o fuseqemu -L https://gitlab.com/rafaelgieschke/fuseqemu/-/jobs/artifacts/master/browse/fuseqemu/?job=build && \
+    chmod +x fuseqemu
 
 COPY --from=eaas/picotcp /libexec/vdenode /libexec/vdenode
 COPY --from=eaas/disktype /disktype_json/src/disktype /usr/local/bin
@@ -193,7 +175,7 @@ RUN chmod 755 /eaas/pronom/DROID_SignatureFile.xml
 
 add files/defaults /home/bwfla/defaults
 
-copy files/nginx/proxy /etc/nginx/conf.d/proxy.conf
-run rm /etc/nginx/conf.d/default.conf
-
 run chmod -R 777 /boot
+
+# update linker cache
+RUN ldconfig

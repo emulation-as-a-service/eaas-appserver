@@ -1,11 +1,11 @@
-from ubuntu:xenial
+from ubuntu:bionic
 
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes \
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated \
 curl git
 
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes \
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated \
 nodejs zip
 
 add picotcp /libexec/picotcp

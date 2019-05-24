@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:bionic
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install sudo jq -y
 run echo "ALL ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
