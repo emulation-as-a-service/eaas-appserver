@@ -10,3 +10,6 @@
 [submodule "common/eaas-picotcp/picotcp"]
 	path = common/eaas-picotcp/picotcp
 	url = https://gitlab.com/emulation-as-a-service/eaas-proxy
+[submodule "custom-packages"]
+	path = common/custom-packages
+	url = https://gitlab.com/emulation-as-a-service/experiments/bionic-update.git

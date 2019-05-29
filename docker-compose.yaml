@@ -1,5 +1,8 @@
 version: '3.2'
 services:
+  custom-packages:
+    image: eaas/custom-packages
+    build: common/custom-packages
   picotcp:
     image: eaas/picotcp
     build: common/eaas-picotcp
@@ -20,6 +23,7 @@ services:
     build: eaas-base
     tty: true
     depends_on:
+      - custom-packages
       - picotcp
       - disktype
       - emucon-tools
@@ -30,9 +34,9 @@ services:
     build: eaas-appserver
     depends_on:
       - base
-  citar:
-    image: eaas/citar
-    build: citar-container
-    depends_on:
-      - base
+#  citar:
+#    image: eaas/citar
+#    build: citar-container
+#    depends_on:
+#      - base
 
