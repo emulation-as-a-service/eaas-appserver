@@ -5,16 +5,7 @@ FROM phusion/baseimage:0.11
 CMD ["/sbin/my_init"]
 EXPOSE 80
 
-RUN apt-get update && apt-get upgrade -y
-
-## init bwfla repo
-#COPY files/bwfla.list /etc/apt/sources.list.d/bwfla.list
-#COPY files/pin-bwfla.pref /etc/apt/preferences.d/pin-bwfla.pref
-
-#RUN echo "deb http://nginx.org/packages/ubuntu/ xenial nginx" > /etc/apt/sources.list.d/nginx.list
-#COPY files/pin-nginx.pref /etc/apt/preferences.d/pin-nginx.pref
-
-#run apt-add-repository ppa:fengestad/stable
+RUN apt-get update && apt-get upgrade -y && apt-get clean && apt-get autoremove
 
 #siegfried
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 379CE192D401AB61
@@ -26,13 +17,10 @@ RUN rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated \
 bindfs \
-#guacd \
-qemu-utils \
 libcurl4 \
-#libcurl3-gnutls \
-qemu-block-extra \
-#xmount \
-#libxmount-input-qemu \
+libaio1 \
+libossp-uuid16 \
+libewf2 \
 debconf-utils \
 pmount \
 mkisofs \
@@ -48,43 +36,25 @@ zip \
 apache2 \
 libfaketime \
 vde2 \
-#dbus-x11 \
-#python-pip \
-#python-dev \
-#build-essential \
-#python3-gi \
-#python3-click \
-#python3-gi-cairo \
-#python3-cairo \
-#gir1.2-gtk-3.0 \
-#python-netifaces \
-#python-avahi \
 nghttp2-proxy \
-#pulseaudio \
 sudo \
 jq \
 git \
-#ghostscript \
 openjdk-8-jre-headless \
-#libprotobuf-dev libprotobuf-c0-dev protobuf-c-compiler protobuf-compiler python-protobuf libnl-3-dev libnet-dev \
 socat \
 mongodb \
 siegfried \
 skopeo \
 wget \
-#bsdtar \
 squashfs-tools \
-libgstreamer1.0-0 \
 gstreamer1.0-plugins-base \
 gstreamer1.0-plugins-good \
 gstreamer1.0-plugins-bad \
+gstreamer1.0-nice \
+gstreamer1.0-libav \
 gstreamer1.0-tools \
 gstreamer1.0-pulseaudio \
-#libgpgme11-dev libassuan-dev btrfs-tools libdevmapper-dev git pkg-config libglib2.0-dev \
     && apt-get clean && apt-get autoremove
-
-
-# libgstreamer1.0-0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-tools gstreamer1.0-pulseaudio \
 
 RUN sed -i 's/#user_allow_other/user_allow_other/' /etc/fuse.conf
 
@@ -155,9 +125,17 @@ RUN \
   chmod +rx /usr/local/acme.sh/ && \
   chown -R bwfla:bwfla /eaas/server-data/acme.sh
 
-RUN cd /usr/local/bin && \
-    curl -o fuseqemu -L https://gitlab.com/rafaelgieschke/fuseqemu/-/jobs/artifacts/master/browse/fuseqemu/?job=build && \
-    chmod +x fuseqemu
+COPY --from=eaas/custom-packages /debs/*.deb /tmp/packages/
+COPY --from=eaas/custom-packages /qemu/debian/tmp /tmp/packages/build/
+RUN cd /tmp/packages && dpkg -i \
+  libguac7_*.deb \
+  libguac-client-sdlonp0_*.deb \
+  guacd_*.deb \
+  xmount_*.deb \
+  libxmount-input-qemu_*.deb \
+  && apt-get clean \
+  && cp -r -v ./build/usr/* /usr \
+  && rm -r /tmp/packages
 
 COPY --from=eaas/picotcp /libexec/vdenode /libexec/vdenode
 COPY --from=eaas/disktype /disktype_json/src/disktype /usr/local/bin
