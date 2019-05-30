@@ -15,7 +15,7 @@ build:
   - export CI_APPLICATION_REPOSITORY="$CI_REGISTRY_IMAGE"
   - export CI_APPLICATION_TAG="git-$CI_COMMIT_SHA"
 
-  - docker-compose build
+  # - docker-compose build
 
   # If you want to push to Docker Hub, set
   # CI_REGISTRY to "docker.io",
@@ -31,7 +31,7 @@ build:
   - ': "${CI_REGISTRY:=docker.io}"'
   - if test "$CI_REGISTRY" = "docker.io" -a -n "$CI_DOCKERHUB_USER"; then
     export CI_REGISTRY_USER="$CI_DOCKERHUB_USER" CI_REGISTRY_PASSWORD="$CI_DOCKERHUB_PASSWORD"; fi
-  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" docker-io
 
   - docker push "eaas/eaas-appserver:$CI_APPLICATION_TAG"
   - if test "$CI_COMMIT_REF_SLUG" = "master"; then docker push "eaas/eaas-appserver:latest"; fi
