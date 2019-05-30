@@ -27,10 +27,7 @@ build:
   # as group variables and only set CI_REGISTRY_IMAGE to "username/repository"
   # on the project.
 
-  - export CI_REGISTRY="$(echo "$CI_REGISTRY_IMAGE" | grep -oE '^[^/]+\.[^/]+')"
-  - ': "${CI_REGISTRY:=docker.io}"'
-  - if test "$CI_REGISTRY" = "docker.io" -a -n "$CI_DOCKERHUB_USER"; then
-    export CI_REGISTRY_USER="$CI_DOCKERHUB_USER" CI_REGISTRY_PASSWORD="$CI_DOCKERHUB_PASSWORD"; fi
+  - export CI_REGISTRY=docker.io
   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" docker-io
 
   - docker push "eaas/eaas-appserver:$CI_APPLICATION_TAG"
