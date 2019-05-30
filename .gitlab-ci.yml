@@ -15,7 +15,7 @@ build:
   - export CI_APPLICATION_REPOSITORY="$CI_REGISTRY_IMAGE"
   - export CI_APPLICATION_TAG="git-$CI_COMMIT_SHA"
 
-  # - docker-compose build
+  - docker-compose build
 
   # If you want to push to Docker Hub, set
   # CI_REGISTRY to "docker.io",
