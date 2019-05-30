@@ -94,7 +94,7 @@
     <profile>
         <subsystem xmlns="urn:jboss:domain:logging:6.0">
             <console-handler name="CONSOLE">
-                <level name="INFO"/>
+                <level name="ERROR"/>
                 <formatter>
                     <named-formatter name="COLOR-PATTERN"/>
                 </formatter>
