@@ -28,7 +28,7 @@ build:
   # on the project.
 
   - export CI_REGISTRY=docker.io
-  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" docker-io
+  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
 
   - docker push "eaas/eaas-appserver:$CI_APPLICATION_TAG"
   - if test "$CI_COMMIT_REF_SLUG" = "master"; then docker push "eaas/eaas-appserver:latest"; fi
