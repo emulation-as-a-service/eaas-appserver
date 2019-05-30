@@ -1,17 +1,40 @@
-image: 
- name: docker/compose:1.24.0-rc1
- entrypoint: ["/bin/sh", "-c"]
+image: docker
+
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+
 services:
 - docker:dind
-variables:
- GIT_SUBMODULE_STRATEGY: recursive
- DOCKER_HOST: "tcp://docker:2375"
+
 build:
+  before_script:
+  - apk add --no-cache python py2-pip
+  - pip install --no-cache-dir docker-compose
+  - docker-compose -v
   script:
-  - docker-compose build
-  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "docker.io"
-  - docker push "eaas/citar"
-  
-trigger:
-  stage: deploy
-  trigger: openslx/emucomp-image-builder
+  - export CI_APPLICATION_REPOSITORY="$CI_REGISTRY_IMAGE"
+  - export CI_APPLICATION_TAG="git-$CI_COMMIT_SHA"
+
+  # If you want to push to Docker Hub, set
+  # CI_REGISTRY to "docker.io",
+  # CI_REGISTRY_IMAGE to "username/repository",
+  # CI_REGISTRY_USER, and CI_REGISTRY_PASSWORD
+  # via Settings > CI/CD > Variables.
+  #
+  # You can also set CI_DOCKERHUB_USER, CI_DOCKERHUB_PASSWORD
+  # as group variables and only set CI_REGISTRY_IMAGE to "username/repository"
+  # on the project.
+
+  - export CI_REGISTRY="$(echo "$CI_REGISTRY_IMAGE" | grep -oE '^[^/]+\.[^/]+')"
+  - ': "${CI_REGISTRY:=docker.io}"'
+  - if test "$CI_REGISTRY" = "docker.io" -a -n "$CI_DOCKERHUB_USER"; then
+    export CI_REGISTRY_USER="$CI_DOCKERHUB_USER" CI_REGISTRY_PASSWORD="$CI_DOCKERHUB_PASSWORD"; fi
+  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+#  - docker push "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
+#  - docker push "$CI_APPLICATION_REPOSITORY:$CI_COMMIT_REF_SLUG"
+#  - if test "$CI_COMMIT_REF_SLUG" = "master"; then docker push "$CI_APPLICATION_REPOSITORY:latest"; fi
+
+  #- docker export $(docker create build) | gzip > ../container.tar.gz
+  #artifacts:
+  #  paths:
+  #  - container.tar.gz
