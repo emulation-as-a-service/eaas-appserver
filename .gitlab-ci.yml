@@ -27,17 +27,17 @@ build:
   # as group variables and only set CI_REGISTRY_IMAGE to "username/repository"
   # on the project.
 
-  - export CI_REGISTRY="$(echo "$CI_REGISTRY_IMAGE" | grep -oE '^[^/]+\.[^/]+')"
-  - ': "${CI_REGISTRY:=docker.io}"'
-  - if test "$CI_REGISTRY" = "docker.io" -a -n "$CI_DOCKERHUB_USER"; then
-    export CI_REGISTRY_USER="$CI_DOCKERHUB_USER" CI_REGISTRY_PASSWORD="$CI_DOCKERHUB_PASSWORD"; fi
+  - export CI_REGISTRY=docker.io
   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-
+  
+  - if test "$CI_COMMIT_REF_SLUG" = "master"; then docker push "eaas/eaas-appserver:latest"; fi
+  - docker tag eaas/eaas-appserver "eaas/eaas-appserver:$CI_APPLICATION_TAG" 
   - docker push "eaas/eaas-appserver:$CI_APPLICATION_TAG"
-  - if test "$CI_COMMIT_REF_SLUG" = "master"; then docker push "eaas/eaas-appserver:latest"; fi
 
-  - docker push "eaas/eaas-proxy:$CI_APPLICATION_TAG"
   - if test "$CI_COMMIT_REF_SLUG" = "master"; then docker push "eaas/eaas-appserver:latest"; fi
+  - docker tag eaas/eaas-proxy "eaas/eaas-proxy:$CI_APPLICATION_TAG"
+  - docker push "eaas/eaas-proxy:$CI_APPLICATION_TAG"
+  
   
 
   #- docker export $(docker create build) | gzip > ../container.tar.gz
