@@ -22,7 +22,8 @@ export LAUNCH_JBOSS_IN_BACKGROUND='true'
 
 if [ "$RUN_AS_ROOT" == "true" ]; then
 	exec /home/bwfla/bw-fla-server/bin/standalone.sh $SSL_DEFINES -b=0.0.0.0 
-else 
+else
+	chown -R bwfla /home/bwfla/bw-fla-server/standalone/log 
 	exec /sbin/setuser bwfla /home/bwfla/bw-fla-server/bin/standalone.sh $SSL_DEFINES -b=0.0.0.0
 fi
 
