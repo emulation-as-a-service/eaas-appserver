@@ -1,4 +1,4 @@
-# create eaas-base 
+# create eaas-base
 # using: https://github.com/phusion/baseimage-docker
 
 FROM phusion/baseimage:0.9.22
@@ -19,9 +19,16 @@ RUN echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen
 RUN add-apt-repository ppa:projectatomic/ppa
 run echo "deb http://dl.bintray.com/siegfried/debian wheezy main" | tee -a /etc/apt/sources.list
 
+# gcloud sdk
+RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee /etc/apt/sources.list.d/google-cloud-sdk.list
+RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
+
 RUN rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes \
+apt-transport-https \
+ca-certificates \
+dnsutils \
 bindfs \
 hatari \
 beebem \
@@ -78,7 +85,7 @@ python3-cairo \
 gir1.2-gtk-3.0 \
 python-netifaces \
 python-avahi \
-nghttp2-proxy \ 
+nghttp2-proxy \
 pulseaudio \
 sudo \
 jq \
@@ -89,10 +96,10 @@ libprotobuf-dev libprotobuf-c0-dev protobuf-c-compiler protobuf-compiler python-
 socat \
 mongodb-org \
 siegfried \
-skopeo \ 
+skopeo \
 wget jq bsdtar squashfs-tools  libgpgme11-dev libassuan-dev btrfs-tools libdevmapper-dev git pkg-config libglib2.0-dev -y && apt-get clean && apt-get autoremove
 #libguestfs-tools \
-#linux-image-generic 
+#linux-image-generic
 
 #VisualBoy is installed in differnt layer, because the previous step is too big for docker to handle
 RUN apt-get install visualboyadvance
@@ -159,7 +166,7 @@ USER root
 
 run mkdir -p /eaas 	\
 /eaas/pronom		\
-/eaas/roms			
+/eaas/roms
 
 RUN \
   cd /tmp && \

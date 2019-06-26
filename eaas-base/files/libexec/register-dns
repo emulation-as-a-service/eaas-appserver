@@ -1,15 +1,67 @@
 #!/bin/sh
+
 set -eu
 
-. "$EAAS_CONFIG_PATH"/dns-env
+. "${EAAS_CONFIG_PATH}/dns-env"
 
-DOMAIN="$1"
-IP="$2"
+domain="${1%.}"
+ip="$2"
 
-DOMAIN="${DOMAIN%.}"
 
-curl -f -w "\n" -X PATCH -H "X-API-Key: $APIKEY" \
-  "$DNSSERVER"/api/v1/servers/localhost/zones/=2E -d \
-  '{"rrsets": [{"changetype": "REPLACE", "name": "'"$DOMAIN."'",
-    "type": "A", "ttl": 3600, "records":
-    [{"content": "'"$IP"'", "disabled": false}]}]}'
+__powerdns_execute() {
+    curl -f -w "\n" -X PATCH -H "X-API-Key: ${EAAS_DNS_APIKEY}" \
+        "${EAAS_DNS_SERVER}/api/v1/servers/localhost/zones/=2E" -d \
+        '{"rrsets": [{"changetype": "REPLACE", "name": "'"${domain}."'", "type": "A",
+        "ttl": 3600, "records": [{"content": "'"${ip}"'", "disabled": false}]}]}'
+}
+
+__gcp_execute() {
+    local txnfile="$(mktemp -u -t gcloud-dns-XXXXX.yaml)"
+
+    gcloud dns record-sets transaction start \
+        --transaction-file "${txnfile}" \
+        --zone "${EAAS_DNS_ZONE}"
+
+    gcloud dns record-sets transaction add \
+        --transaction-file "${txnfile}" \
+        --zone "${EAAS_DNS_ZONE}" \
+        --name "${domain}." \
+        --ttl "${EAAS_DNS_RECORD_TTL}" \
+        --type A \
+        "${ip}"
+
+    gcloud dns record-sets transaction execute \
+        --transaction-file "${txnfile}" \
+        --zone "${EAAS_DNS_ZONE}"
+
+    sleep 10  # Wait for transaction to finish
+}
+
+
+case "${EAAS_DNS_PROVIDER}" in
+    powerdns)
+        __powerdns_execute ;;
+    gcp)
+        __gcp_execute ;;
+    *)
+        echo "Unknown DNS provider: ${EAAS_DNS_PROVIDER}"
+        exit 1 ;;
+esac
+
+echo ''
+
+inum=12
+idelay=10
+echo "Waiting for DNS record (max. ${inum}*${idelay}sec):"
+while ! nslookup "${domain}" > /dev/null ; do
+    inum=$((inum - 1))
+    if [ "${inum}" -eq 0 ] ; then
+        echo "-> failure!"
+        exit 1
+    fi
+
+    echo "-> not found, retry in ${idelay}sec..."
+    sleep "${idelay}"
+done
+
+echo '-> success!'
