@@ -31,12 +31,12 @@ build:
   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
   
   - if test "$CI_COMMIT_REF_SLUG" = "master"; then docker push "eaas/eaas-appserver:latest"; fi
-  - docker tag eaas/eaas-appserver "eaas/eaas-appserver:$CI_APPLICATION_TAG" 
-  - docker push "eaas/eaas-appserver:$CI_APPLICATION_TAG"
+  - docker tag eaas/eaas-appserver "eaas/eaas-appserver:$CI_COMMIT_REF_SLUG" 
+  - docker push "eaas/eaas-appserver:$CI_COMMIT_REF_SLUG"
 
   - if test "$CI_COMMIT_REF_SLUG" = "master"; then docker push "eaas/eaas-proxy:latest"; fi
-  - docker tag eaas/eaas-proxy "eaas/eaas-proxy:$CI_APPLICATION_TAG"
-  - docker push "eaas/eaas-proxy:$CI_APPLICATION_TAG"
+  - docker tag eaas/eaas-proxy "eaas/eaas-proxy:$CI_COMMIT_REF_SLUG"
+  - docker push "eaas/eaas-proxy:$CI_COMMIT_REF_SLUG"
   
   
 
