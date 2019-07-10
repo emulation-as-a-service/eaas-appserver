@@ -178,10 +178,10 @@ RUN \
   chmod +rx /usr/local/acme.sh/ && \
   chown -R bwfla:bwfla /eaas/server-data/acme.sh
 
-run curl -o /libexec/eaas-proxy-download.zip -L https://gitlab.com/emulation-as-a-service/eaas-proxy/-/jobs/131451356/artifacts/download
+run curl -o /libexec/eaas-proxy-download.zip -L https://gitlab.com/emulation-as-a-service/eaas-proxy/-/jobs/248331762/artifacts/download
 workdir /libexec
 run unzip eaas-proxy-download.zip
-run mv eaas-proxy vdenode
+run mv eaas-proxy/eaas-proxy vdenode
 workdir / 
 
 COPY --from=eaas/disktype /disktype_json/src/disktype /usr/local/bin
