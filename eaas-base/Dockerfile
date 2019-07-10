@@ -178,7 +178,12 @@ RUN \
   chmod +rx /usr/local/acme.sh/ && \
   chown -R bwfla:bwfla /eaas/server-data/acme.sh
 
-COPY --from=eaas/picotcp /libexec/vdenode /libexec/vdenode
+run curl -o /libexec/eaas-proxy-download.zip -L https://gitlab.com/emulation-as-a-service/eaas-proxy/-/jobs/131451356/artifacts/download
+workdir /libexec
+run unzip eaas-proxy-download.zip
+run mv eaas-proxy vdenode
+workdir / 
+
 COPY --from=eaas/disktype /disktype_json/src/disktype /usr/local/bin
 COPY --from=eaas/emucon-tools /emucon-output /usr/local
 COPY --from=eaas/criu /usr/local/bin/criu /usr/local/bin

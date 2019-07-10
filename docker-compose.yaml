@@ -1,8 +1,5 @@
 version: '3.2'
 services:
-  picotcp:
-    image: eaas/picotcp
-    build: common/eaas-picotcp
   disktype:
     image: eaas/disktype
     build: common/eaas-disktype
@@ -23,7 +20,6 @@ services:
     build: eaas-base
     tty: true
     depends_on:
-      - picotcp
       - disktype
       - emucon-tools
       - criu
