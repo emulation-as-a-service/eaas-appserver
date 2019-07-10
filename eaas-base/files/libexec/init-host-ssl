@@ -2,10 +2,31 @@
 
 . /home/bwfla/.bwFLA/dns-env || exit
 
-export DEPLOY_NGHTTPX_RELOAD="/libexec/update-nghttpx"
+set -eu
 
+acmeshdir='/home/bwfla/server-data/acme.sh/'
+
+export DEPLOY_NGHTTPX_RELOAD="/libexec/update-nghttpx"
+export LE_CONFIG_HOME="${acmeshdir}"
+
+# Gateway's certificate
 if ! test -f "/eaas/certificates/server.crt"; then
-	export LE_CONFIG_HOME="/home/bwfla/server-data/acme.sh"
-	/usr/local/acme.sh/acme.sh --dns "${ACMESH_DNS_API:?}" --deploy-hook nghttpx --issue -d "${EAAS_DOMAIN:?}"
+	/usr/local/acme.sh/acme.sh --dns "${ACMESH_DNS_API}" --deploy-hook nghttpx --issue -d "${EAAS_DOMAIN}"
 	/usr/local/acme.sh/acme.sh --dns "${ACMESH_DNS_API}" --deploy-hook nghttpx --deploy -d "${EAAS_DOMAIN}"
+fi
+
+domain="*.${EAAS_DOMAIN}"
+certfile="${acmeshdir}/${domain}/fullchain.cer"
+
+# Certificate for all emucomps
+if ! test -f "${certfile}" ; then
+	# Uncomment if you want Let's Encrypt to generate test certificates.
+	# testmode="--test"
+	testmode=''
+
+	set +e
+
+	# Note: `--days 30` will renew the certificate every 30 days.
+	/usr/local/acme.sh/acme.sh ${testmode} --dns "${ACMESH_DNS_API}" --days 30 --issue -d "${domain}" >&2
+	rc="$?"; test "${rc}" -eq '0' -o "${rc}" -eq '2' || exit "${rc}"
 fi

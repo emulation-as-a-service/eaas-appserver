@@ -10,25 +10,6 @@ BASEDOMAIN="${DOMAIN#*.}"
 CERTDOMAIN="*.$BASEDOMAIN"
 
 ACMESHDIR="/home/bwfla/server-data/acme.sh/"
-TEST=""
-
-export LE_CONFIG_HOME="$ACMESHDIR"
-
-# Note: `--days 30` will renew the certificate every 30 days.
-# As Let's Encrypt certificates are valid for 90 days,
-# this script injects a certificate that is still valid for
-# 60 days in the worst case.
-
-# Uncomment if you want Let's Encrypt to generate test certificates.
-# TEST="--test"
-
-ret="0"
-/usr/local/acme.sh/acme.sh $TEST --dns "$ACMESH_DNS_API" --days 30 --issue -d "$CERTDOMAIN" >&2 || ret="$?"
-
-if ! test "$ret" -eq "0" -o "$ret" -eq "2"; then
-  exit "$ret"
-fi
-
 CERTFILE="$ACMESHDIR/$CERTDOMAIN/fullchain.cer"
 KEYFILE="$ACMESHDIR/$CERTDOMAIN/$CERTDOMAIN.key"
 
