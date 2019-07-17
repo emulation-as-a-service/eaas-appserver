@@ -9,10 +9,17 @@ acmeshdir='/home/bwfla/server-data/acme.sh/'
 export DEPLOY_NGHTTPX_RELOAD="/libexec/update-nghttpx"
 export LE_CONFIG_HOME="${acmeshdir}"
 
+__acmesh() {
+	# convert return-code 2 to 0, else return original value
+	local rc='0'
+	/usr/local/acme.sh/acme.sh "$@" || rc="$?"
+	test "${rc}" -eq '2' || return "${rc}"
+}
+
 # Gateway's certificate
 if ! test -f "/eaas/certificates/server.crt"; then
-	/usr/local/acme.sh/acme.sh --dns "${ACMESH_DNS_API}" --deploy-hook nghttpx --issue -d "${EAAS_DOMAIN}"
-	/usr/local/acme.sh/acme.sh --dns "${ACMESH_DNS_API}" --deploy-hook nghttpx --deploy -d "${EAAS_DOMAIN}"
+	__acmesh --dns "${ACMESH_DNS_API}" --deploy-hook nghttpx --issue -d "${EAAS_DOMAIN}"
+	__acmesh --dns "${ACMESH_DNS_API}" --deploy-hook nghttpx --deploy -d "${EAAS_DOMAIN}"
 fi
 
 domain="*.${EAAS_DOMAIN}"
@@ -24,9 +31,6 @@ if ! test -f "${certfile}" ; then
 	# testmode="--test"
 	testmode=''
 
-	set +e
-
 	# Note: `--days 30` will renew the certificate every 30 days.
-	/usr/local/acme.sh/acme.sh ${testmode} --dns "${ACMESH_DNS_API}" --days 30 --issue -d "${domain}" >&2
-	rc="$?"; test "${rc}" -eq '0' -o "${rc}" -eq '2' || exit "${rc}"
+	__acmesh ${testmode} --dns "${ACMESH_DNS_API}" --days 30 --issue -d "${domain}"
 fi
