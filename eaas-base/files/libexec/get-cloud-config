@@ -1,4 +1,5 @@
 #!/bin/sh
+
 set -eu
 
 . "$EAAS_CONFIG_PATH"/dns-env
@@ -9,30 +10,6 @@ BASEDOMAIN="${DOMAIN#*.}"
 CERTDOMAIN="*.$BASEDOMAIN"
 
 ACMESHDIR="/home/bwfla/server-data/acme.sh/"
-TEST=""
-
-export PDNS_Url="${DNSSERVER%/}"
-export PDNS_ServerId="localhost"
-export PDNS_Token="$APIKEY"
-export PDNS_Ttl=60
-export Le_DNSSleep=5
-export LE_CONFIG_HOME="$ACMESHDIR"
-
-# Note: `--days 30` will renew the certificate every 30 days.
-# As Let's Encrypt certificates are valid for 90 days,
-# this script injects a certificate that is still valid for
-# 60 days in the worst case.
-
-# Uncomment if you want Let's Encrypt to generate test certificates.
-# TEST="--test"
-
-ret="0"
-/usr/local/acme.sh/acme.sh $TEST --dns dns_pdns --days 30 --issue -d "$CERTDOMAIN" >&2 || ret="$?"
-
-if ! test "$ret" -eq "0" -o "$ret" -eq "2"; then
-  exit "$ret"
-fi
-
 CERTFILE="$ACMESHDIR/$CERTDOMAIN/fullchain.cer"
 KEYFILE="$ACMESHDIR/$CERTDOMAIN/$CERTDOMAIN.key"
 
@@ -42,22 +19,22 @@ write_files:
 - encoding: b64
   owner: root:root
   permissions: "0644"
-  path: /eaas/server.key
+  path: /eaas/certificates/server.key
   content: $(base64 --wrap=0 "$KEYFILE")
 - encoding: b64
   owner: root:root
   permissions: "0644"
-  path: /eaas/server.crt
+  path: /eaas/certificates/server.crt
   content: $(base64 --wrap=0 "$CERTFILE")
 - encoding: b64
   owner: root:root
   permissions: "0644"
-  path: /eaas/domain
+  path: /eaas/certificates/domain
   content: $(printf "%s\n" "$DOMAIN" | base64 --wrap=0)
 - encoding: b64
   owner: root:root
   permissions: "0644"
-  path: /eaas/certdomain
+  path: /eaas/certificates/certdomain
   content: $(printf "%s\n" "$CERTDOMAIN" | base64 --wrap=0)
 #password: eaas
 #chpasswd: {expire: false}

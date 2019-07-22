@@ -1,14 +1,46 @@
 #!/bin/sh
+
 set -eu
 
-. "$EAAS_CONFIG_PATH"/dns-env
+. "${EAAS_CONFIG_PATH}/dns-env"
 
-DOMAIN="$1"
-IP="$2"
+domain="${1%.}"
+ip="$2"
 
-DOMAIN="${DOMAIN%.}"
 
-curl -f -w "\n" -X PATCH -H "X-API-Key: $APIKEY" \
-  "$DNSSERVER"/api/v1/servers/localhost/zones/=2E -d \
-  '{"rrsets": [{"changetype": "DELETE", "name": "'"$DOMAIN."'",
-    "type": "A"}]}'
+__powerdns_execute() {
+    curl -f -w "\n" -X PATCH -H "X-API-Key: ${EAAS_DNS_APIKEY}" \
+        "${EAAS_DNS_SERVER}/api/v1/servers/localhost/zones/=2E" -d \
+        '{"rrsets": [{"changetype": "DELETE", "name": "'"${domain}."'", "type": "A"}]}'
+}
+
+__gcp_execute() {
+    local txnfile="$(mktemp -u -t gcloud-dns-XXXXX.yaml)"
+
+    gcloud dns record-sets transaction start \
+        --transaction-file "${txnfile}" \
+        --zone "${EAAS_DNS_ZONE}"
+
+    gcloud dns record-sets transaction remove \
+        --transaction-file "${txnfile}" \
+        --zone "${EAAS_DNS_ZONE}" \
+        --name "${domain}." \
+        --ttl "${EAAS_DNS_RECORD_TTL}" \
+        --type A \
+        "${ip}"
+
+    gcloud dns record-sets transaction execute \
+        --transaction-file "${txnfile}" \
+        --zone "${EAAS_DNS_ZONE}"
+}
+
+
+case "${EAAS_DNS_PROVIDER}" in
+    powerdns)
+        __powerdns_execute ;;
+    gcp)
+        __gcp_execute ;;
+    *)
+        echo "Unknown DNS provider: ${EAAS_DNS_PROVIDER}"
+        exit 1 ;;
+esac

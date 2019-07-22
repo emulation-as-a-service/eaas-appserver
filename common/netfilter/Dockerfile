@@ -6,7 +6,7 @@ run curl ftp://ftp.netfilter.org/pub/iptables/iptables-1.8.2.tar.bz2 -o /tmp/ipt
 workdir /tmp
 run tar xf iptables-1.8.2.tar.bz2
 workdir iptables-1.8.2
-run ./configure     --prefix=/out     --mandir=/usr/man  --disable-nftables
+run ./configure --prefix=/usr/local --disable-nftables
 run make
 run make install
 

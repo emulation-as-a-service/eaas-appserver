@@ -3,7 +3,6 @@
 
 FROM phusion/baseimage:0.11
 CMD ["/sbin/my_init"]
-EXPOSE 80
 
 RUN apt-get update && apt-get upgrade -y && apt-get clean && apt-get autoremove
 
@@ -13,14 +12,22 @@ run echo "deb http://dl.bintray.com/siegfried/debian wheezy main" | tee -a /etc/
 
 RUN add-apt-repository ppa:projectatomic/ppa
 
+# gcloud sdk
+RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee /etc/apt/sources.list.d/google-cloud-sdk.list
+RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
+
 RUN rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated \
+apt-transport-https \
+ca-certificates \
+dnsutils \
 bindfs \
 libcurl4 \
 libaio1 \
 libossp-uuid16 \
 libewf2 \
+librbd1 \
 debconf-utils \
 pmount \
 mkisofs \
@@ -40,6 +47,7 @@ nghttp2-proxy \
 sudo \
 jq \
 git \
+rsync \
 openjdk-8-jre-headless \
 socat \
 mongodb \
@@ -137,12 +145,19 @@ RUN cd /tmp/packages && dpkg -i \
   && cp -r -v ./build/usr/* /usr \
   && rm -r /tmp/packages
 
-COPY --from=eaas/picotcp /libexec/vdenode /libexec/vdenode
+run curl -o /libexec/eaas-proxy-download.zip -L https://gitlab.com/emulation-as-a-service/eaas-proxy/-/jobs/248331762/artifacts/download \
+  && cd /libexec \
+  && unzip eaas-proxy-download.zip \
+  && mv eaas-proxy/eaas-proxy vdenode \
+  && rm -r eaas-proxy \
+  && rm eaas-proxy-download.zip
+
 COPY --from=eaas/disktype /disktype_json/src/disktype /usr/local/bin
 COPY --from=eaas/emucon-tools /emucon-output /usr/local
 COPY --from=eaas/criu /usr/local/bin/criu /usr/local/bin
 COPY --from=eaas/emucon-tools /emucon-tools /home/bwfla/emucon-tools
-COPY --from=eaas/netfilter /out /usr
+COPY --from=eaas/netfilter /usr/local /usr/local
+COPY --from=eaas/fake-clock /fake-clock/LD_PRELOAD_clock_gettime.so /usr/local/lib/
 
 ENV PATH="/home/bwfla/emucon-tools/runtime/bin/:${PATH}"
 RUN /home/bwfla/emucon-tools/install.sh --destination /usr/local -u bwfla \
@@ -157,3 +172,6 @@ run chmod -R 777 /boot
 
 # update linker cache
 RUN ldconfig
+
+COPY --from=eaas/vde /out /tmp
+RUN dpkg -i /tmp/*.deb && rm /tmp/*.deb

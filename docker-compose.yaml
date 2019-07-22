@@ -3,9 +3,6 @@ services:
   custom-packages:
     image: eaas/custom-packages
     build: common/custom-packages
-  picotcp:
-    image: eaas/picotcp
-    build: common/eaas-picotcp
   disktype:
     image: eaas/disktype
     build: common/eaas-disktype
@@ -15,28 +12,37 @@ services:
   criu:
     image: eaas/criu
     build: common/eaas-criu
+  fake-clock:
+    image: eaas/fake-clock
+    build: common/fake-clock
   netfilter:
     image: eaas/netfilter
     build: common/netfilter
+  vde:
+    image: eaas/vde
+    build: common/vde-slirp
   base:
     image: eaas/eaas-base
     build: eaas-base
     tty: true
     depends_on:
       - custom-packages
-      - picotcp
       - disktype
       - emucon-tools
       - criu
+      - fake-clock
       - netfilter
+      - vde
   eaas-appserver:
     image: eaas/eaas-appserver
     build: eaas-appserver
     depends_on:
       - base
-#  citar:
-#    image: eaas/citar
-#    build: citar-container
-#    depends_on:
-#      - base
-
+  eaas-proxy:
+    image: eaas/eaas-proxy
+    build: proxy-container
+  citar:
+    image: eaas/citar
+    build: citar-container
+    depends_on:
+      - base
