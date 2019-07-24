@@ -38,6 +38,10 @@ build:
   - docker tag eaas/eaas-proxy "eaas/eaas-proxy:$CI_COMMIT_REF_SLUG"
   - docker push "eaas/eaas-proxy:$CI_COMMIT_REF_SLUG"
   
+  - if test "$CI_COMMIT_REF_SLUG" = "master"; then docker push "eaas/citar:latest"; fi
+  - docker tag eaas/citar "eaas/citar:$CI_COMMIT_REF_SLUG" 
+  - docker push "eaas/citar:$CI_COMMIT_REF_SLUG"
+  
   
 
   #- docker export $(docker create build) | gzip > ../container.tar.gz
