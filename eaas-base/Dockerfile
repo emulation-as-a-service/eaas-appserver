@@ -13,7 +13,7 @@ COPY files/pin-bwfla.pref /etc/apt/preferences.d/pin-bwfla.pref
 run apt-add-repository ppa:fengestad/stable
 
 #mongo
-RUN echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | tee /etc/apt/sources.list.d/mongodb.list
+run echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.0 multiverse" |  tee /etc/apt/sources.list.d/mongodb-org-3.0.list
 
 #siegfried
 RUN add-apt-repository ppa:projectatomic/ppa
@@ -94,12 +94,14 @@ ghostscript \
 openjdk-8-jre-headless \
 libprotobuf-dev libprotobuf-c0-dev protobuf-c-compiler protobuf-compiler python-protobuf libnl-3-dev libnet-dev \
 socat \
-mongodb-org \
 siegfried \
 skopeo \
 wget jq bsdtar squashfs-tools  libgpgme11-dev libassuan-dev btrfs-tools libdevmapper-dev git pkg-config libglib2.0-dev -y && apt-get clean && apt-get autoremove
 #libguestfs-tools \
 #linux-image-generic
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes \
+mongodb-org=3.0.15 mongodb-org-server=3.0.15 mongodb-org-shell=3.0.15 mongodb-org-mongos=3.0.15 mongodb-org-tools=3.0.15
 
 #VisualBoy is installed in differnt layer, because the previous step is too big for docker to handle
 RUN apt-get install visualboyadvance
