@@ -1,5 +1,8 @@
 version: '3.2'
 services:
+  custom-packages:
+    image: eaas/custom-packages
+    build: common/custom-packages
   disktype:
     image: eaas/disktype
     build: common/eaas-disktype
@@ -9,6 +12,9 @@ services:
   criu:
     image: eaas/criu
     build: common/eaas-criu
+  fake-clock:
+    image: eaas/fake-clock
+    build: common/fake-clock
   netfilter:
     image: eaas/netfilter
     build: common/netfilter
@@ -20,9 +26,11 @@ services:
     build: eaas-base
     tty: true
     depends_on:
+      - custom-packages
       - disktype
       - emucon-tools
       - criu
+      - fake-clock
       - netfilter
       - vde
   eaas-appserver:
@@ -30,14 +38,11 @@ services:
     build: eaas-appserver
     depends_on:
       - base
-
   eaas-proxy:
     image: eaas/eaas-proxy
     build: proxy-container
-
   citar:
     image: eaas/citar
     build: citar-container
     depends_on:
       - base
-

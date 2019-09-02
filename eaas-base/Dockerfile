@@ -1,23 +1,16 @@
 # create eaas-base
 # using: https://github.com/phusion/baseimage-docker
 
-FROM phusion/baseimage:0.9.22
+FROM phusion/baseimage:0.11
 CMD ["/sbin/my_init"]
 
-RUN apt-get update && apt-get upgrade -y
-
-## init bwfla repo
-COPY files/bwfla.list /etc/apt/sources.list.d/bwfla.list
-COPY files/pin-bwfla.pref /etc/apt/preferences.d/pin-bwfla.pref
-
-run apt-add-repository ppa:fengestad/stable
-
-#mongo
-run echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.0 multiverse" |  tee /etc/apt/sources.list.d/mongodb-org-3.0.list
+RUN apt-get update && apt-get upgrade -y && apt-get clean && apt-get autoremove
 
 #siegfried
-RUN add-apt-repository ppa:projectatomic/ppa
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 379CE192D401AB61
 run echo "deb http://dl.bintray.com/siegfried/debian wheezy main" | tee -a /etc/apt/sources.list
+
+RUN add-apt-repository ppa:projectatomic/ppa
 
 # gcloud sdk
 RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee /etc/apt/sources.list.d/google-cloud-sdk.list
@@ -25,37 +18,16 @@ RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyri
 
 RUN rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes \
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated \
 apt-transport-https \
 ca-certificates \
 dnsutils \
 bindfs \
-hatari \
-beebem \
-kegs-sdl \
-vice-sdl \
-basilisk2 \
-pce-atari-st \
-pce-atari-st-data \
-pce-dos \
-pce-ibmpc \
-pce-ibmpc-data \
-pce-macplus \
-pce-macplus-data \
-pce-utils \
-dosbox \
-guacd \
-libguac-client-sdlonp0 \
-libsdl1.2debian \
-qemu-utils \
-qemu-system-x86 \
-qemu-system-ppc \
-sheepshaver \
-libcurl3 \
-libcurl3-gnutls \
-qemu-block-extra \
-xmount \
-libxmount-input-qemu \
+libcurl4 \
+libaio1 \
+libossp-uuid16 \
+libewf2 \
+librbd1 \
 debconf-utils \
 pmount \
 mkisofs \
@@ -68,45 +40,29 @@ hfsprogs \
 cabextract \
 chntpw \
 zip \
-fs-uae \
-fs-uae-launcher \
-fs-uae-arcade \
 apache2 \
 libfaketime \
 vde2 \
-dbus-x11 \
-python-pip \
-python-dev \
-build-essential \
-python3-gi \
-python3-click \
-python3-gi-cairo \
-python3-cairo \
-gir1.2-gtk-3.0 \
-python-netifaces \
-python-avahi \
 nghttp2-proxy \
-pulseaudio \
 sudo \
 jq \
 git \
-ghostscript \
+rsync \
 openjdk-8-jre-headless \
-libprotobuf-dev libprotobuf-c0-dev protobuf-c-compiler protobuf-compiler python-protobuf libnl-3-dev libnet-dev \
 socat \
+mongodb \
 siegfried \
 skopeo \
-wget jq bsdtar squashfs-tools  libgpgme11-dev libassuan-dev btrfs-tools libdevmapper-dev git pkg-config libglib2.0-dev -y && apt-get clean && apt-get autoremove
-#libguestfs-tools \
-#linux-image-generic
-
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes \
-mongodb-org=3.0.15 mongodb-org-server=3.0.15 mongodb-org-shell=3.0.15 mongodb-org-mongos=3.0.15 mongodb-org-tools=3.0.15
-
-#VisualBoy is installed in differnt layer, because the previous step is too big for docker to handle
-RUN apt-get install visualboyadvance
-
-#RUN pip install neovim-gui
+wget \
+squashfs-tools \
+gstreamer1.0-plugins-base \
+gstreamer1.0-plugins-good \
+gstreamer1.0-plugins-bad \
+gstreamer1.0-nice \
+gstreamer1.0-libav \
+gstreamer1.0-tools \
+gstreamer1.0-pulseaudio \
+    && apt-get clean && apt-get autoremove
 
 RUN sed -i 's/#user_allow_other/user_allow_other/' /etc/fuse.conf
 
@@ -114,9 +70,6 @@ RUN rm -rf /usr/lib/xmount/libxmount_input_aff.so
 
 ## prepare the system to host sheepshaver
 COPY files/init-scripts/ /etc/my_init.d/
-
-add files/vice-data/opt /opt
-add files/amiga /opt/amiga
 
 # allow loop devices to be mounted by users
 #COPY files/pmount.allow /etc/pmount.allow
@@ -148,7 +101,7 @@ COPY files/lib/ /usr/local/lib/
 
 RUN addgroup --gid 1000 bwfla
 RUN addgroup fuse
-RUN useradd -ms /bin/bash --uid 1000 --gid bwfla bwfla && for grp in fuse disk audio plugdev kvm; do adduser bwfla $grp; done
+RUN useradd -ms /bin/bash --uid 1000 --gid bwfla bwfla && for grp in fuse disk audio plugdev; do adduser bwfla $grp; done
 
 run chown bwfla:bwfla /home/bwfla
 
@@ -180,17 +133,31 @@ RUN \
   chmod +rx /usr/local/acme.sh/ && \
   chown -R bwfla:bwfla /eaas/server-data/acme.sh
 
-run curl -o /libexec/eaas-proxy-download.zip -L https://gitlab.com/emulation-as-a-service/eaas-proxy/-/jobs/248331762/artifacts/download
-workdir /libexec
-run unzip eaas-proxy-download.zip
-run mv eaas-proxy/eaas-proxy vdenode
-workdir / 
+COPY --from=eaas/custom-packages /debs/*.deb /tmp/packages/
+COPY --from=eaas/custom-packages /qemu/debian/tmp /tmp/packages/build/
+RUN cd /tmp/packages && dpkg -i \
+  libguac7_*.deb \
+  libguac-client-sdlonp0_*.deb \
+  guacd_*.deb \
+  xmount_*.deb \
+  libxmount-input-qemu_*.deb \
+  && apt-get clean \
+  && cp -r -v ./build/usr/* /usr \
+  && rm -r /tmp/packages
+
+run curl -o /libexec/eaas-proxy-download.zip -L https://gitlab.com/emulation-as-a-service/eaas-proxy/-/jobs/248331762/artifacts/download \
+  && cd /libexec \
+  && unzip eaas-proxy-download.zip \
+  && mv eaas-proxy/eaas-proxy vdenode \
+  && rm -r eaas-proxy \
+  && rm eaas-proxy-download.zip
 
 COPY --from=eaas/disktype /disktype_json/src/disktype /usr/local/bin
 COPY --from=eaas/emucon-tools /emucon-output /usr/local
 COPY --from=eaas/criu /usr/local/bin/criu /usr/local/bin
 COPY --from=eaas/emucon-tools /emucon-tools /home/bwfla/emucon-tools
-COPY --from=eaas/netfilter /out /usr
+COPY --from=eaas/netfilter /usr/local /usr/local
+COPY --from=eaas/fake-clock /fake-clock/LD_PRELOAD_clock_gettime.so /usr/local/lib/
 
 ENV PATH="/home/bwfla/emucon-tools/runtime/bin/:${PATH}"
 RUN /home/bwfla/emucon-tools/install.sh --destination /usr/local -u bwfla \
@@ -203,23 +170,8 @@ add files/defaults /home/bwfla/defaults
 
 run chmod -R 777 /boot
 
+# update linker cache
+RUN ldconfig
+
 COPY --from=eaas/vde /out /tmp
-RUN dpkg -i /tmp/*.deb
-
-run curl ftp://ftp.netfilter.org/pub/iptables/iptables-1.8.2.tar.bz2 -o /tmp/iptables-1.8.2.tar.bz2
-workdir /tmp
-run tar xf iptables-1.8.2.tar.bz2
-workdir iptables-1.8.2
-run ./configure     --prefix=/out     --mandir=/usr/man  --disable-nftables
-run make
-run make install
-
-#add https://gitlab.com/emulation-as-a-service/experiments/fake-clock/-/jobs/164758264/artifacts/raw/LD_PRELOAD_clock_gettime.so /usr/local/lib/
-
-RUN git clone https://gitlab.com/emulation-as-a-service/experiments/fake-clock.git /fake-clock
-workdir /fake-clock
-run make
-run cp LD_PRELOAD_clock_gettime.so /usr/local/lib/
-workdir /
-
-
+RUN dpkg -i /tmp/*.deb && rm /tmp/*.deb

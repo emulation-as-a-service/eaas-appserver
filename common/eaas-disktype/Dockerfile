@@ -1,4 +1,4 @@
-FROM ubuntu:xenial
+FROM ubuntu:bionic
 
 run apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get install build-essential -y  --allow-unauthenticated
