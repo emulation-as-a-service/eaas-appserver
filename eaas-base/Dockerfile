@@ -55,6 +55,7 @@ siegfried \
 skopeo \
 wget \
 squashfs-tools \
+cpu-checker \
 gstreamer1.0-plugins-base \
 gstreamer1.0-plugins-good \
 gstreamer1.0-plugins-bad \
