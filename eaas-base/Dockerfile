@@ -4,7 +4,7 @@
 FROM phusion/baseimage:0.9.22
 CMD ["/sbin/my_init"]
 
-RUN apt-get update && apt-get upgrade -y
+RUN apt-get update && apt-get upgrade -y -o Dpkg::Options::="--force-confdef"
 
 ## init bwfla repo
 COPY files/bwfla.list /etc/apt/sources.list.d/bwfla.list
