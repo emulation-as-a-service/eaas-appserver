@@ -1,0 +1,27 @@
+#!/bin/sh
+
+set -eu
+
+outfile="$1"
+workdir="$(mktemp --tmpdir --directory 'eaas-er-XXXXX')"
+
+cd "${workdir}"
+
+mkdir report
+cd report
+
+echo '--> Copying current config files...'
+cp -r -v /eaas/config .
+
+echo '--> Copying current log files...'
+cp -r -v /home/bwfla/bw-fla-server/standalone/log/server.log .
+
+cd ..
+
+echo '--> Creating encrypted tar archive...'
+tar -c -z report | gpg --encrypt --recipient 'eaas-error-reporter' \
+	--output "${outfile}" --trust-model always --verbose --batch --yes 2>&1
+
+echo '--> Cleaning up...'
+rm -r -v "${workdir}"
+
