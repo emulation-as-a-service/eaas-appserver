@@ -4,7 +4,7 @@
 FROM phusion/baseimage:0.11
 CMD ["/sbin/my_init"]
 
-RUN apt-get update && apt-get upgrade -y && apt-get clean && apt-get autoremove
+RUN apt-get update && apt-get upgrade -y -o Dpkg::Options::="--force-confdef" && apt-get clean && apt-get autoremove
 
 #siegfried
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 379CE192D401AB61
