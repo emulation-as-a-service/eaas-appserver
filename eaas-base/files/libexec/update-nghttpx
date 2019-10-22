@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ -f "/etc/service/nghttpx/supervise/ok" ]; then
-        exec sv reload nghttpx
+if sv status nghttpx | grep -q '^run:'; then
+	exec sv reload nghttpx
 fi
 exit 0
