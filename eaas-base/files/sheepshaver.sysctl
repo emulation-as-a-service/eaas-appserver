@@ -1,0 +1,2 @@
+# SheepShaver needs to access the bottom 64k of memory
+vm.mmap_min_addr = 0

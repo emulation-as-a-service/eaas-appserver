@@ -72,6 +72,8 @@ RUN sed -i 's/#user_allow_other/user_allow_other/' /etc/fuse.conf
 RUN rm -rf /usr/lib/xmount/libxmount_input_aff.so
 
 ## prepare the system to host sheepshaver
+copy sheepshaver.sysctl /etc/sysctl.d/30-sheepshaver.conf
+
 COPY files/init-scripts/ /etc/my_init.d/
 
 # allow loop devices to be mounted by users
