@@ -1,7 +1,17 @@
 #!/bin/sh
 
+__gpg_import() {
+    sudo -u bwfla gpg --import
+}
+
 # import public key for error-reporting
-sudo -u bwfla gpg --import <<-EOT
+keyfile='/home/bwfla/.bwFLA/eaas-error-reporter.key.pub'
+if [ -f "${keyfile}" ] ; then
+    echo "Importing custom error-reporting key: ${keyfile}"
+    __gpg_import < "${keyfile}"
+else
+    echo "Importing default error-reporting key..."
+    __gpg_import <<-EOT
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 
 mQENBF2csVkBCADigVlFGWgIlw3S1TwjEaAHcJnr6kdCKI3+Np/FHZ/WA1+YbbFn
@@ -33,4 +43,4 @@ CM/69Jz7rPdI65q/yjjFe0m2ub1ILC7SVwI6Ca4k9g7XCKq6cVvOORNo1Jyv33PH
 =1Cs+
 -----END PGP PUBLIC KEY BLOCK-----
 EOT
-
+fi
