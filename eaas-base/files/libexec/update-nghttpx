@@ -1,6 +1,10 @@
 #!/bin/bash
 
 if sv status nghttpx | grep -q '^run:'; then
-	exec sv reload nghttpx
+    # TODO: This should rather only reload nghttpx by sending it a USR2 signal
+    # (`sv 2 nghttpx`). This not trivial, though, as USR2 causes
+    # nghttpx and, thus, /etc/service/nghttpx/run
+    # to exit. runit will then try to restart nghttpx in an infinite loop.
+    exec sv restart nghttpx
 fi
 exit 0
