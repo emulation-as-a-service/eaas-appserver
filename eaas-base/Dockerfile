@@ -185,3 +185,7 @@ RUN dpkg -i /tmp/*.deb && rm /tmp/*.deb
 run curl -o /usr/local/lib/LD_PRELOAD_libcurl.so -L https://gitlab.com/emulation-as-a-service/experiments/fake-libcurl/-/jobs/artifacts/prefix-proxy/raw/LD_PRELOAD_libcurl.so?job=build
 run chmod 755 /usr/local/lib/LD_PRELOAD_libcurl.so
 
+run curl -L -o /tmp/vde-slirp.zip https://gitlab.com/emulation-as-a-service/slirp-helper/-/jobs/artifacts/master/download/?job=build && \
+	mkdir -p /libexec/vde && \ 
+	cd /libexec/vde && \
+	unzip /tmp/vde-slirp.zip  
