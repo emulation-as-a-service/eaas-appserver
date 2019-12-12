@@ -36,6 +36,10 @@ write_files:
   permissions: "0644"
   path: /eaas/certificates/certdomain
   content: $(printf "%s\n" "$CERTDOMAIN" | base64 --wrap=0)
+- path: ${EAAS_CONFIG_PATH}/eaas-config.d/99-imagearchive-domain.yaml
+  owner: bwfla:bwfla
+  content: |
+    ws.imagearchive: https://${DOMAIN}
 #password: eaas
 #chpasswd: {expire: false}
 EOF
