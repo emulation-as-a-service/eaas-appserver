@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 user_crt='/eaas/certificates/server.crt'
 user_key='/eaas/certificates/server.key'
@@ -13,13 +13,22 @@ if test -f "${user_crt}"; then
   cp "${user_crt}" "${server_crt}"
   cp "${user_key}" "${server_key}"
 elif ! test -f "${server_crt}"; then
-  openssl req -x509 -subj "/" -newkey rsa:4096 -days 10000 -nodes \
+  {
+    cat /etc/ssl/openssl.cnf
+    cat << EOF
+      [ext]
+      subjectAltName=DNS:localhost,DNS:eaas
+      basicConstraints=critical,CA:false
+EOF
+  } | openssl req -x509 -subj "/CN=localhost" \
+    -newkey rsa:4096 -days 10000 -nodes \
     -keyout "${server_key}" \
     -out "${server_crt}" \
-    -reqexts SAN \
-    -extensions SAN \
-    -config <(cat /etc/ssl/openssl.cnf; \
-    printf "\n[SAN]\nsubjectAltName=DNS:localhost")
+    -reqexts ext \
+    -extensions ext \
+    -config -
+  ln -s /etc/nghttpx/server.crt /usr/local/share/ca-certificates/localhost-eaas.crt
+  update-ca-certificates
 fi
 
 exec /usr/sbin/nghttpx
