@@ -85,6 +85,7 @@ COPY files/service /etc/service/
 
 ## prepare services
 COPY files/sudoers/citar-passwordless-commands /etc/sudoers.d/citar-passwordless-commands
+RUN chmod 440 /etc/sudoers.d/citar-passwordless-commands
 
 #apache config
 COPY files/apache-sites /etc/apache2/sites-available/
