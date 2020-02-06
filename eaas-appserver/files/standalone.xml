@@ -177,7 +177,8 @@
                               context-service="default"
                               reject-policy="RETRY_ABORT"
                               hung-task-threshold="60000"
-                              keepalive-time="15000" />
+                              keepalive-time="15000" 
+			      max-threads="1024" />
                       <managed-executor-service name="batch"
                               jndi-name="java:jboss/ee/concurrency/executor/batch"
                               context-service="default"
