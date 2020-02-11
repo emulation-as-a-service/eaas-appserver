@@ -31,6 +31,12 @@ if ! test -f "${certfile}" ; then
 	# testmode="--test"
 	testmode=''
 
+	# HACK: The TXT record (_acme-challenge.${EAAS_DOMAIN}) from the first
+	# __acmesh call might still be cached here
+	# (for "powerdns" (${EAAS_DNS_PROVIDER}) this could, alternatively,
+	# be controlled using ${PDNS_Ttl}, for "gcp" it cannot be changed).
+	sleep 60
+
 	# Note: `--days 30` will renew the certificate every 30 days.
 	__acmesh ${testmode} --dns "${ACMESH_DNS_API}" --days 30 --issue -d "${domain}"
 fi
