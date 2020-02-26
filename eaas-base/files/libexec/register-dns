@@ -13,6 +13,8 @@ __powerdns_execute() {
         "${EAAS_DNS_SERVER}/api/v1/servers/localhost/zones/=2E" -d \
         '{"rrsets": [{"changetype": "REPLACE", "name": "'"${domain}."'", "type": "A",
         "ttl": 3600, "records": [{"content": "'"${ip}"'", "disabled": false}]}]}'
+
+    sleep 10  # Wait for request to take effect
 }
 
 __gcp_execute() {
