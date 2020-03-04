@@ -4,7 +4,7 @@ variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
 services:
-- docker:19.03.5-dind
+- docker:dind
 
 build:
   before_script:
