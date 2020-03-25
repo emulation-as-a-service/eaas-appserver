@@ -502,6 +502,7 @@
 	    <modify-wsdl-address>true</modify-wsdl-address>
 	    <wsdl-uri-scheme>${eaas.urischeme}</wsdl-uri-scheme>
             <wsdl-secure-port>${eaas.proxyport}</wsdl-secure-port>
+            <wsdl-host>${eaas.proxyhost}</wsdl-host>
 	    <wsdl-port>${eaas.proxyport}</wsdl-port>
             <endpoint-config name="Standard-Endpoint-Config"/>
             <endpoint-config name="Recording-Endpoint-Config">
