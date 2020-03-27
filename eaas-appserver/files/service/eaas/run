@@ -14,11 +14,6 @@ else
                 EAAS_PROXYPORT=8080
         fi
         SSL_DEFINES="-Deaas.urischeme=http -Deaas.proxyport=$EAAS_PROXYPORT"
-
-fi
-
-if [ -n "$EAAS_PROXYHOST" ]; then
-	SSL_DEFINES="$SSL_DEFINES -Deaas.proxyhost=$EAAS_PROXYHOST"
 fi
 
 # NOTE: JBOSS server should be started in background, or else
