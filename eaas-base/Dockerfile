@@ -134,7 +134,7 @@ RUN \
   cd /tmp && \
   # git clone https://github.com/Neilpang/acme.sh && \
   # HACK: Needed until <https://github.com/Neilpang/acme.sh/pull/1395> is merged. \
-  git clone https://github.com/rafaelgieschke/acme.sh && \
+  git clone https://gitlab.com/emulation-as-a-service/acme.sh && \
   cd acme.sh && \
   ./acme.sh --install --home /usr/local/acme.sh --config-home /eaas/server-data/acme.sh && \
   chmod +rx /usr/local/acme.sh/ && \
