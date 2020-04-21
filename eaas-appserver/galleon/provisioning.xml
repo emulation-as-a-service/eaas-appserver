@@ -1,0 +1,108 @@
+<?xml version="1.0" ?>
+
+<installation xmlns="urn:jboss:galleon:provisioning:3.0">
+	<feature-pack location="wildfly@maven(org.jboss.universe:community-universe):19"/>
+	<config model="standalone" name="standalone.xml">
+		<feature spec="subsystem.logging">
+			<!-- custom logging configs -->
+			<feature spec="subsystem.logging.console-handler">
+				<param name="console-handler" value="CONSOLE"/>
+				<param name="level" value="ERROR"/>
+			</feature>
+			<feature spec="subsystem.logging.periodic-rotating-file-handler">
+				<param name="periodic-rotating-file-handler" value="FILE"/>
+				<param name="suffix" value=".yyyyMM"/>
+			</feature>
+			<feature spec="subsystem.logging.async-handler">
+				<param name="async-handler" value="BUFFER"/>
+				<param name="queue-length" value="1024"/>
+				<param name="overflow-action" value="BLOCK"/>
+				<param name="subhandlers" value="[CONSOLE, FILE]"/>
+			</feature>
+			<feature spec="subsystem.logging.logger">
+				<param name="logger" value="org.apache.tamaya"/>
+				<param name="level" value="WARN"/>
+			</feature>
+			<feature spec="subsystem.logging.root-logger.ROOT">
+				<param name="root-logger" value="ROOT"/>
+				<param name="handlers" value="[BUFFER]"/>
+			</feature>
+			<feature spec="subsystem.logging.pattern-formatter">
+				<param name="pattern-formatter" value="PATTERN"/>
+				<param name="pattern" value="&quot;%d{yyyy-MM-dd HH:mm:ss.SSS} %p [%c{1}] (%t) %s%e%n&quot;"/>
+			</feature>
+			<feature spec="subsystem.logging.pattern-formatter">
+				<param name="pattern-formatter" value="COLOR-PATTERN"/>
+				<param name="pattern" value="&quot;%K{level}%d{yyyy-MM-dd HH:mm:ss.SSS} %p [%c{1}] (%t) %s%e%n&quot;"/>
+			</feature>
+		</feature>
+		<feature spec="subsystem.ee">
+			<!-- custom executor configs -->
+			<feature spec="subsystem.ee.managed-executor-service">
+				<param name="managed-executor-service" value="default"/>
+				<param name="jndi-name" value="java:jboss/ee/concurrency/executor/default"/>
+				<param name="core-threads" value="2"/>
+			</feature>
+			<feature spec="subsystem.ee.managed-executor-service">
+				<param name="managed-executor-service" value="compute"/>
+				<param name="jndi-name" value="java:jboss/ee/concurrency/executor/compute"/>
+				<param name="context-service" value="default"/>
+				<param name="hung-task-threshold" value="60000"/>
+				<param name="keepalive-time" value="30000"/>
+				<param name="core-threads" value="2"/>
+				<param name="max-threads" value="8"/>
+			</feature>
+			<feature spec="subsystem.ee.managed-executor-service">
+				<param name="managed-executor-service" value="batch"/>
+				<param name="jndi-name" value="java:jboss/ee/concurrency/executor/batch"/>
+				<param name="context-service" value="default"/>
+				<param name="hung-task-threshold" value="60000"/>
+				<param name="keepalive-time" value="10000"/>
+				<param name="core-threads" value="2"/>
+				<param name="max-threads" value="16"/>
+			</feature>
+			<feature spec="subsystem.ee.managed-executor-service">
+				<param name="managed-executor-service" value="io"/>
+				<param name="jndi-name" value="java:jboss/ee/concurrency/executor/io"/>
+				<param name="context-service" value="default"/>
+				<param name="hung-task-threshold" value="60000"/>
+				<param name="keepalive-time" value="10000"/>
+				<param name="core-threads" value="2"/>
+				<param name="max-threads" value="512"/>
+			</feature>
+			<feature spec="subsystem.ee.managed-scheduled-executor-service">
+				<param name="managed-scheduled-executor-service" value="default"/>
+				<param name="keepalive-time" value="10000"/>
+				<param name="core-threads" value="2"/>
+			</feature>
+		</feature>
+		<feature spec="subsystem.undertow">
+			<!-- custom web-server config -->
+			<feature spec="subsystem.undertow.server.http-listener">
+				<param name="server" value="default-server"/>
+				<param name="http-listener" value="default"/>
+				<param name="socket-binding" value="http"/>
+				<param name="enable-http2" value="true"/>
+				<param name="max-post-size" value="107374182400"/>
+			</feature>
+			<feature spec="subsystem.undertow.server.https-listener">
+				<param name="server" value="default-server"/>
+				<param name="https-listener" value="https"/>
+				<param name="socket-binding" value="https"/>
+				<param name="security-realm" value="ApplicationRealm"/>
+				<param name="enable-http2" value="true"/>
+				<param name="max-post-size" value="107374182400"/>
+			</feature>
+		</feature>
+		<feature spec="subsystem.webservices">
+			<!-- custom webservices config -->
+			<param name="modify-wsdl-address" value="true"/>
+			<param name="wsdl-uri-scheme" value="${eaas.urischeme}"/>
+			<param name="wsdl-secure-port" value="${eaas.proxyport}"/>
+			<param name="wsdl-port" value="${eaas.proxyport}"/>
+		</feature>
+	</config>
+	<options>
+		<option name="optional-packages" value="passive+"/>
+	</options>
+</installation>
