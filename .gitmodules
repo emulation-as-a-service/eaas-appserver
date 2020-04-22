@@ -13,3 +13,6 @@
 [submodule "custom-packages"]
 	path = common/custom-packages
 	url = https://gitlab.com/emulation-as-a-service/experiments/bionic-update.git
+[submodule "common/test-sock-diag"]
+	path = common/test-sock-diag
+	url = https://gitlab.com/emulation-as-a-service/experiments/test-sock-diag
