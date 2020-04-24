@@ -8,6 +8,7 @@ RUN unzip galleon.zip && mv galleon-${galleon_version} galleon
 # provision wildfly application server
 RUN mkdir wildfly && ./galleon/bin/galleon.sh provision provisioning.xml --dir=wildfly
 COPY ./files/standalone.conf ./wildfly/bin/
+RUN echo '' > ./wildfly/standalone/configuration/logging.properties
 RUN rm -rf ./wildfly/welcome-content/*
 RUN chown -R bwfla:bwfla ./wildfly
 
