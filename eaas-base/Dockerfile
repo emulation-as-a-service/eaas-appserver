@@ -134,7 +134,7 @@ RUN \
   cd /tmp && \
   # git clone https://github.com/Neilpang/acme.sh && \
   # HACK: Needed until <https://github.com/Neilpang/acme.sh/pull/1395> is merged. \
-  git clone https://github.com/rafaelgieschke/acme.sh && \
+  git clone https://gitlab.com/emulation-as-a-service/acme.sh && \
   cd acme.sh && \
   ./acme.sh --install --home /usr/local/acme.sh --config-home /eaas/server-data/acme.sh && \
   chmod +rx /usr/local/acme.sh/ && \
@@ -165,6 +165,7 @@ COPY --from=eaas/criu /usr/local/bin/criu /usr/local/bin
 COPY --from=eaas/emucon-tools /emucon-tools /home/bwfla/emucon-tools
 COPY --from=eaas/netfilter /usr/local /usr/local
 COPY --from=eaas/fake-clock /fake-clock/LD_PRELOAD_clock_gettime.so /usr/local/lib/
+COPY --from=eaas/test-sock-diag /src/test-sock-diag /usr/local/bin/
 
 ENV PATH="/home/bwfla/emucon-tools/runtime/bin/:${PATH}"
 RUN /home/bwfla/emucon-tools/install.sh --destination /usr/local -u bwfla \

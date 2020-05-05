@@ -15,6 +15,9 @@ services:
   fake-clock:
     image: eaas/fake-clock
     build: common/fake-clock
+  test-sock-diag:
+    image: eaas/test-sock-diag
+    build: common/test-sock-diag
   netfilter:
     image: eaas/netfilter
     build: common/netfilter
