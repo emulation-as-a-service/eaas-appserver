@@ -1,0 +1,209 @@
+<?xml version="1.0" ?>
+
+<installation xmlns="urn:jboss:galleon:provisioning:3.0">
+	<feature-pack location="wildfly@maven(org.jboss.universe:community-universe):19">
+		<default-configs inherit="false"/>
+		<packages inherit="false">
+			<!-- packages to include explicitly -->
+			<include name="org.jboss.as.ejb3"/>
+			<include name="org.jboss.as.webservices"/>
+			<include name="org.jboss.as.webservices.server.integration"/>
+			<include name="org.wildfly.clustering.ejb.infinispan"/>
+		</packages>
+	</feature-pack>
+	<config model="standalone" name="standalone.xml">
+		<feature spec="subsystem.logging">
+			<!-- custom logging configs -->
+			<feature spec="subsystem.logging.console-handler">
+				<param name="console-handler" value="CONSOLE"/>
+				<param name="level" value="ERROR"/>
+			</feature>
+			<feature spec="subsystem.logging.periodic-rotating-file-handler">
+				<param name="periodic-rotating-file-handler" value="FILE"/>
+				<param name="suffix" value=".yyyyMM"/>
+			</feature>
+			<feature spec="subsystem.logging.async-handler">
+				<param name="async-handler" value="BUFFER"/>
+				<param name="queue-length" value="1024"/>
+				<param name="overflow-action" value="BLOCK"/>
+				<param name="subhandlers" value="[CONSOLE, FILE]"/>
+			</feature>
+			<feature spec="subsystem.logging.logger">
+				<param name="logger" value="org.apache.tamaya"/>
+				<param name="level" value="WARN"/>
+			</feature>
+			<feature spec="subsystem.logging.root-logger.ROOT">
+				<param name="root-logger" value="ROOT"/>
+				<param name="handlers" value="[BUFFER]"/>
+			</feature>
+			<feature spec="subsystem.logging.pattern-formatter">
+				<param name="pattern-formatter" value="PATTERN"/>
+				<param name="pattern" value="&quot;%d{yyyy-MM-dd HH:mm:ss.SSS} |%.1p| (%t) [%c{1}] %s%e%n&quot;"/>
+			</feature>
+			<feature spec="subsystem.logging.pattern-formatter">
+				<param name="pattern-formatter" value="COLOR-PATTERN"/>
+				<param name="pattern" value="&quot;%K{level}%d{yyyy-MM-dd HH:mm:ss.SSS} |%.1p| (%t) [%c{1}] %s%e%n&quot;"/>
+			</feature>
+		</feature>
+		<feature spec="subsystem.ee">
+			<!-- custom executor configs -->
+			<feature spec="subsystem.ee.managed-executor-service">
+				<param name="managed-executor-service" value="default"/>
+				<param name="jndi-name" value="java:jboss/ee/concurrency/executor/default"/>
+				<param name="core-threads" value="2"/>
+			</feature>
+			<feature spec="subsystem.ee.managed-executor-service">
+				<param name="managed-executor-service" value="compute"/>
+				<param name="jndi-name" value="java:jboss/ee/concurrency/executor/compute"/>
+				<param name="context-service" value="default"/>
+				<param name="hung-task-threshold" value="60000"/>
+				<param name="keepalive-time" value="30000"/>
+				<param name="core-threads" value="2"/>
+				<param name="max-threads" value="8"/>
+			</feature>
+			<feature spec="subsystem.ee.managed-executor-service">
+				<param name="managed-executor-service" value="batch"/>
+				<param name="jndi-name" value="java:jboss/ee/concurrency/executor/batch"/>
+				<param name="context-service" value="default"/>
+				<param name="hung-task-threshold" value="60000"/>
+				<param name="keepalive-time" value="10000"/>
+				<param name="core-threads" value="2"/>
+				<param name="max-threads" value="16"/>
+			</feature>
+			<feature spec="subsystem.ee.managed-executor-service">
+				<param name="managed-executor-service" value="io"/>
+				<param name="jndi-name" value="java:jboss/ee/concurrency/executor/io"/>
+				<param name="context-service" value="default"/>
+				<param name="hung-task-threshold" value="60000"/>
+				<param name="keepalive-time" value="10000"/>
+				<param name="core-threads" value="2"/>
+				<param name="max-threads" value="512"/>
+			</feature>
+			<feature spec="subsystem.ee.managed-scheduled-executor-service">
+				<param name="managed-scheduled-executor-service" value="default"/>
+				<param name="keepalive-time" value="10000"/>
+				<param name="core-threads" value="2"/>
+			</feature>
+		</feature>
+		<feature spec="subsystem.undertow">
+			<!-- custom web-server config -->
+			<feature spec="subsystem.undertow.server.http-listener">
+				<param name="server" value="default-server"/>
+				<param name="http-listener" value="default"/>
+				<param name="socket-binding" value="http"/>
+				<param name="enable-http2" value="true"/>
+				<param name="max-post-size" value="107374182400"/>
+			</feature>
+			<feature spec="subsystem.undertow.server.https-listener">
+				<param name="server" value="default-server"/>
+				<param name="https-listener" value="https"/>
+				<param name="socket-binding" value="https"/>
+				<param name="security-realm" value="ApplicationRealm"/>
+				<param name="enable-http2" value="true"/>
+				<param name="max-post-size" value="107374182400"/>
+			</feature>
+		</feature>
+		<feature spec="subsystem.ejb3">
+			<!-- custom ejb3 config (based on defaults) -->
+			<param name="default-stateful-bean-access-timeout" value="5000"/>
+			<param name="default-missing-method-permissions-deny-access" value="true"/>
+			<param name="default-sfsb-passivation-disabled-cache" value="simple"/>
+			<param name="default-security-domain" value="other"/>
+			<param name="default-sfsb-cache" value="simple"/>
+			<param name="statistics-enabled" value="false"/>
+			<param name="default-slsb-instance-pool" value="slsb-strict-max-pool"/>
+			<param name="log-system-exceptions" value="true"/>
+			<param name="default-singleton-bean-access-timeout" value="5000"/>
+			<feature spec="subsystem.ejb3.cache">
+				<param name="cache" value="simple"/>
+			</feature>
+			<feature spec="subsystem.ejb3.strict-max-bean-instance-pool">
+				<param name="strict-max-bean-instance-pool" value="mdb-strict-max-pool"/>
+				<param name="derive-size" value="from-cpu-count"/>
+				<param name="timeout" value="5"/>
+				<param name="timeout-unit" value="MINUTES"/>
+			</feature>
+			<feature spec="subsystem.ejb3.strict-max-bean-instance-pool">
+				<param name="strict-max-bean-instance-pool" value="slsb-strict-max-pool"/>
+				<param name="derive-size" value="from-worker-pools"/>
+				<param name="timeout" value="5"/>
+				<param name="timeout-unit" value="MINUTES"/>
+			</feature>
+			<feature spec="subsystem.ejb3.passivation-store">
+				<param name="cache-container" value="ejb"/>
+				<param name="max-size" value="10000"/>
+				<param name="passivation-store" value="infinispan"/>
+			</feature>
+			<feature spec="subsystem.ejb3.service.async">
+				<param name="service" value="async"/>
+				<param name="thread-pool-name" value="default"/>
+			</feature>
+			<feature spec="subsystem.ejb3.service.timer-service">
+				<param name="default-data-store" value="default-file-store"/>
+				<param name="service" value="timer-service"/>
+				<param name="thread-pool-name" value="default"/>
+			</feature>
+			<feature spec="subsystem.ejb3.service.timer-service.file-data-store">
+				<param name="path" value="timer-service-data"/>
+				<param name="file-data-store" value="default-file-store"/>
+				<param name="relative-to" value="jboss.server.data.dir"/>
+				<param name="service" value="timer-service"/>
+			</feature>
+			<feature spec="subsystem.ejb3.thread-pool">
+				<param name="thread-pool" value="default"/>
+				<param name="max-threads" value="8"/>
+				<feature spec="subsystem.ejb3.thread-pool.keepalive-time">
+					<param name="thread-pool" value="default"/>
+					<param name="unit" value="SECONDS"/>
+					<param name="time" value="60"/>
+				</feature>
+			</feature>
+		</feature>
+		<feature spec="subsystem.security.security-domain">
+				<param name="security-domain" value="jboss-ejb-policy"/>
+				<param name="cache-type" value="default"/>
+		</feature>
+		<feature spec="subsystem.webservices">
+			<!-- custom webservices config -->
+			<param name="modify-wsdl-address" value="true"/>
+			<param name="wsdl-uri-scheme" value="${eaas.urischeme}"/>
+			<param name="wsdl-secure-port" value="${eaas.proxyport}"/>
+			<param name="wsdl-port" value="${eaas.proxyport}"/>
+			<feature spec="subsystem.webservices.client-config">
+				<param name="client-config" value="Standard-Client-Config"/>
+			</feature>
+			<feature spec="subsystem.webservices.endpoint-config">
+				<param name="endpoint-config" value="Standard-Endpoint-Config"/>
+			</feature>
+			<feature spec="subsystem.webservices.endpoint-config">
+				<param name="endpoint-config" value="Recording-Endpoint-Config"/>
+			</feature>
+			<feature spec="subsystem.webservices.endpoint-config.pre-handler-chain">
+				<param name="pre-handler-chain" value="recording-handlers"/>
+				<param name="protocol-bindings" value="##SOAP11_HTTP ##SOAP11_HTTP_MTOM ##SOAP12_HTTP ##SOAP12_HTTP_MTOM"/>
+				<param name="endpoint-config" value="Recording-Endpoint-Config"/>
+			</feature>
+			<feature spec="subsystem.webservices.endpoint-config.pre-handler-chain.handler">
+				<param name="pre-handler-chain" value="recording-handlers"/>
+				<param name="handler" value="RecordingHandler"/>
+				<param name="class" value="org.jboss.ws.common.invocation.RecordingServerHandler"/>
+				<param name="endpoint-config" value="Recording-Endpoint-Config"/>
+			</feature>
+		</feature>
+		<layers>
+			<include name="cdi"/>
+			<include name="jaxrs"/>
+			<include name="logging"/>
+			<include name="ee-security"/>
+			<include name="legacy-security"/>
+			<include name="core-security-realms"/>
+			<include name="microprofile-config"/>
+			<include name="transactions"/>
+			<include name="management"/>
+			<include name="core-tools"/>
+		</layers>
+	</config>
+	<options>
+		<option name="optional-packages" value="passive+"/>
+	</options>
+</installation>

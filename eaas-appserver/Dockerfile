@@ -1,22 +1,19 @@
+FROM eaas/eaas-base AS wildfly-build
+WORKDIR /var/work
+COPY galleon/provisioning.xml .
+# install official galleon tool
+ARG galleon_version='4.2.5.Final'
+RUN curl -o galleon.zip --location https://github.com/wildfly/galleon/releases/download/${galleon_version}/galleon-${galleon_version}.zip
+RUN unzip galleon.zip && mv galleon-${galleon_version} galleon
+# provision wildfly application server
+RUN mkdir wildfly && ./galleon/bin/galleon.sh provision provisioning.xml --dir=wildfly
+COPY ./files/standalone.conf ./wildfly/bin/
+RUN echo '' > ./wildfly/standalone/configuration/logging.properties
+RUN rm -rf ./wildfly/welcome-content/*
+RUN chown -R bwfla:bwfla ./wildfly
+
+
 FROM eaas/eaas-base
 CMD ["/sbin/my_init"]
-
-#add appserver-wildfly-10.1.tgz /home/bwfla/
-add appserver-wildfly-14.0.1.tgz /home/bwfla/
-run mv /home/bwfla/appserver-wildfly-14.0.1/ /home/bwfla/bw-fla-server/
-copy files/standalone.conf /home/bwfla/bw-fla-server/bin/
-copy files/standalone.xml /home/bwfla/bw-fla-server/standalone/configuration/standalone.xml
-
-RUN rm -rf /home/bwfla/bw-fla-server/welcome-content/*
-#ADD files/web/index.html /home/bwfla/bw-fla-server/welcome-content/
-
-RUN chown -R bwfla:bwfla /home/bwfla/bw-fla-server
-# Disable wildfly's security restrictions on management port when we run in Docker.
-# This is not a problem, even if the management interface is bound to 0.0.0.0, because
-# Docker won't expose this port automatically and we will only ever bind the management
-# port to localhost, resulting in the same security as if we would run wildfly natively
-# without Docker.
-RUN sed -i 's/security-realm="ManagementRealm"//' /home/bwfla/bw-fla-server/standalone/configuration/standalone.xml
-
+COPY --from=wildfly-build /var/work/wildfly/ /home/bwfla/bw-fla-server/
 COPY files/service /etc/service/
-
