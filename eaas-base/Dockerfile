@@ -184,6 +184,9 @@ RUN ldconfig
 COPY --from=eaas/vde /out /tmp
 RUN dpkg -i /tmp/*.deb && rm /tmp/*.deb
 
+run curl -o /libexec/websocat -L https://github.com/vi/websocat/releases/download/v1.5.0/websocat_amd64-linux-static
+run chmod 755 /libexec/websocat
+
 run curl -o /usr/local/lib/LD_PRELOAD_libcurl.so -L https://gitlab.com/emulation-as-a-service/experiments/fake-libcurl/-/jobs/artifacts/prefix-proxy/raw/LD_PRELOAD_libcurl.so?job=build
 run chmod 755 /usr/local/lib/LD_PRELOAD_libcurl.so
 
