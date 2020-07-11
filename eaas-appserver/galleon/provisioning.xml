@@ -56,33 +56,42 @@
 				<param name="managed-executor-service" value="compute"/>
 				<param name="jndi-name" value="java:jboss/ee/concurrency/executor/compute"/>
 				<param name="context-service" value="default"/>
-				<param name="hung-task-threshold" value="60000"/>
+				<param name="reject-policy" value="RETRY_ABORT"/>
+				<param name="hung-task-threshold" value="5000"/>
 				<param name="keepalive-time" value="30000"/>
-				<param name="core-threads" value="2"/>
+				<param name="core-threads" value="4"/>
 				<param name="max-threads" value="8"/>
+				<param name="queue-length" value="256"/>
 			</feature>
 			<feature spec="subsystem.ee.managed-executor-service">
 				<param name="managed-executor-service" value="batch"/>
 				<param name="jndi-name" value="java:jboss/ee/concurrency/executor/batch"/>
 				<param name="context-service" value="default"/>
-				<param name="hung-task-threshold" value="60000"/>
+				<param name="reject-policy" value="RETRY_ABORT"/>
+				<param name="hung-task-threshold" value="600000"/>
+				<param name="long-running-tasks" value="true"/>
 				<param name="keepalive-time" value="10000"/>
-				<param name="core-threads" value="2"/>
+				<param name="core-threads" value="8"/>
 				<param name="max-threads" value="16"/>
+				<param name="queue-length" value="128"/>
 			</feature>
 			<feature spec="subsystem.ee.managed-executor-service">
 				<param name="managed-executor-service" value="io"/>
 				<param name="jndi-name" value="java:jboss/ee/concurrency/executor/io"/>
 				<param name="context-service" value="default"/>
+				<param name="reject-policy" value="RETRY_ABORT"/>
 				<param name="hung-task-threshold" value="60000"/>
-				<param name="keepalive-time" value="10000"/>
-				<param name="core-threads" value="2"/>
-				<param name="max-threads" value="512"/>
+				<param name="long-running-tasks" value="true"/>
+				<param name="keepalive-time" value="30000"/>
+				<param name="core-threads" value="4"/>
+				<param name="max-threads" value="4096"/>
+				<param name="queue-length" value="0"/>
 			</feature>
 			<feature spec="subsystem.ee.managed-scheduled-executor-service">
 				<param name="managed-scheduled-executor-service" value="default"/>
+				<param name="reject-policy" value="RETRY_ABORT"/>
 				<param name="keepalive-time" value="10000"/>
-				<param name="core-threads" value="2"/>
+				<param name="core-threads" value="4"/>
 			</feature>
 		</feature>
 		<feature spec="subsystem.undertow">
