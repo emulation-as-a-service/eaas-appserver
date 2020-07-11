@@ -93,6 +93,11 @@
 				<param name="keepalive-time" value="10000"/>
 				<param name="core-threads" value="4"/>
 			</feature>
+			<feature spec="subsystem.ee.service.default-bindings">
+				<param name="managed-thread-factory" value="java:jboss/ee/concurrency/factory/default"/>
+				<param name="managed-executor-service" value="java:jboss/ee/concurrency/executor/io"/>
+				<param name="managed-scheduled-executor-service" value="java:jboss/ee/concurrency/scheduler/default"/>
+			</feature>
 		</feature>
 		<feature spec="subsystem.undertow">
 			<!-- custom web-server config -->
