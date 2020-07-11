@@ -59,9 +59,9 @@
 				<param name="reject-policy" value="RETRY_ABORT"/>
 				<param name="hung-task-threshold" value="5000"/>
 				<param name="keepalive-time" value="30000"/>
-				<param name="core-threads" value="4"/>
-				<param name="max-threads" value="8"/>
-				<param name="queue-length" value="256"/>
+				<param name="core-threads" value="${eaas.executor.compute.core_threads:4}"/>
+				<param name="max-threads" value="${eaas.executor.compute.max_threads:8}"/>
+				<param name="queue-length" value="${eaas.executor.compute.queue_length:256}"/>
 			</feature>
 			<feature spec="subsystem.ee.managed-executor-service">
 				<param name="managed-executor-service" value="batch"/>
@@ -71,9 +71,9 @@
 				<param name="hung-task-threshold" value="600000"/>
 				<param name="long-running-tasks" value="true"/>
 				<param name="keepalive-time" value="10000"/>
-				<param name="core-threads" value="8"/>
-				<param name="max-threads" value="16"/>
-				<param name="queue-length" value="128"/>
+				<param name="core-threads" value="${eaas.executor.batch.core_threads:8}"/>
+				<param name="max-threads" value="${eaas.executor.batch.max_threads:16}"/>
+				<param name="queue-length" value="${eaas.executor.batch.queue_length:128}"/>
 			</feature>
 			<feature spec="subsystem.ee.managed-executor-service">
 				<param name="managed-executor-service" value="io"/>
@@ -83,15 +83,15 @@
 				<param name="hung-task-threshold" value="60000"/>
 				<param name="long-running-tasks" value="true"/>
 				<param name="keepalive-time" value="30000"/>
-				<param name="core-threads" value="4"/>
-				<param name="max-threads" value="4096"/>
-				<param name="queue-length" value="0"/>
+				<param name="core-threads" value="${eaas.executor.io.core_threads:4}"/>
+				<param name="max-threads" value="${eaas.executor.io.max_threads:4096}"/>
+				<param name="queue-length" value="${eaas.executor.io.queue_length:0}"/>
 			</feature>
 			<feature spec="subsystem.ee.managed-scheduled-executor-service">
 				<param name="managed-scheduled-executor-service" value="default"/>
 				<param name="reject-policy" value="RETRY_ABORT"/>
 				<param name="keepalive-time" value="10000"/>
-				<param name="core-threads" value="4"/>
+				<param name="core-threads" value="${eaas.scheduler.default.core_threads:4}"/>
 			</feature>
 			<feature spec="subsystem.ee.service.default-bindings">
 				<param name="managed-thread-factory" value="java:jboss/ee/concurrency/factory/default"/>
