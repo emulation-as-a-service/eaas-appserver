@@ -4,6 +4,12 @@ if [ ! -d "/home/bwfla/log" ]; then
   /sbin/setuser bwfla mkdir -p /home/bwfla/log
 fi
 
+
+# disable pathname expansion. for more info see comments [1] and [2]:
+# [1] https://gitlab.com/openslx/eaas-docker/-/merge_requests/9#note_377867812
+# [2] https://gitlab.com/openslx/eaas-docker/-/merge_requests/9#note_377872521
+set -f
+
 if [ "$SSL_PROXY" == "true" ]; then
         if [ -z "$EAAS_PROXYPORT" ]; then
                 EAAS_PROXYPORT=443
