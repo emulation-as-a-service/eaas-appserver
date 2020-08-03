@@ -49,6 +49,11 @@
 			"id":"Q100047", "label" : "Amiga",
 			"puids" : [],
 			"extensions" : ["adf"]
-		}
+		},
+		{
+                        "id":"default", "label" : "*",
+                        "puids" : [],
+                        "extensions" : []
+                }
 	]
 }
