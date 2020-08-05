@@ -16,7 +16,7 @@ RUN add-apt-repository ppa:projectatomic/ppa
 RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee /etc/apt/sources.list.d/google-cloud-sdk.list
 RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
 
-run curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+run curl -sL https://deb.nodesource.com/setup_14.x | bash -
 
 
 RUN rm -rf /var/lib/apt/lists/*
