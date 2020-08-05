@@ -16,6 +16,9 @@ RUN add-apt-repository ppa:projectatomic/ppa
 RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee /etc/apt/sources.list.d/google-cloud-sdk.list
 RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
 
+run curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+
+
 RUN rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated \
@@ -66,6 +69,7 @@ gstreamer1.0-nice \
 gstreamer1.0-libav \
 gstreamer1.0-tools \
 gstreamer1.0-pulseaudio \
+nodejs \
     && apt-get clean && apt-get autoremove
 
 RUN sed -i 's/#user_allow_other/user_allow_other/' /etc/fuse.conf
