@@ -197,4 +197,9 @@ run chmod 755 /usr/local/lib/LD_PRELOAD_libcurl.so
 run curl -L -o /tmp/vde-slirp.zip https://gitlab.com/emulation-as-a-service/slirp-helper/-/jobs/artifacts/master/download/?job=build && \
 	mkdir -p /libexec/vde && \ 
 	cd /libexec/vde && \
-	unzip /tmp/vde-slirp.zip  
+	unzip /tmp/vde-slirp.zip
+
+WORKDIR /libexec
+run git clone https://gitlab.com/emulation-as-a-service/get-s3-token.git && cd get-s3-token && npm install 
+
+  
