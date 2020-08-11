@@ -1,0 +1,12 @@
+#!/bin/bash 
+
+if [ ! -z "$MINIO_ADMIN_KEY" ] && [ ! -z "$MINIO_ADMIN_SECRET" ] && [ ! -z "$MINIO_USER_KEY" ] && [ ! -z "$MINIO_USER_SECRET" ]
+then
+	/libexec/mc alias set minio http://minio:9000 "$MINIO_ADMIN_KEY" "$MINIO_ADMIN_SECRET" 
+	# user=$(/libexec/mc admin --json user list minio | jq .accessKey)
+        /libexec/mc admin user add minio "$MINIO_USER_KEY" "$MINIO_USER_SECRET"
+	#user=$(/libexec/mc admin --json user list minio | jq .accessKey)
+	/libexec/mc mb minio/user-data
+	/libexec/mc admin policy set minio readwrite user="$MINIO_USER_KEY"
+fi
+
