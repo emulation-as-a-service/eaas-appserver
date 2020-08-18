@@ -1,0 +1,6 @@
+#
+# Privileged commands for EaaS server,
+# required to be run without password
+#
+
+bwfla ALL = NOPASSWD: ALL

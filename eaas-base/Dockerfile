@@ -88,8 +88,8 @@ COPY files/init-scripts/ /etc/my_init.d/
 COPY files/service /etc/service/
 
 ## prepare services
-COPY files/sudoers/citar-passwordless-commands /etc/sudoers.d/citar-passwordless-commands
-RUN chmod 440 /etc/sudoers.d/citar-passwordless-commands
+COPY files/sudoers/eaas-pwdless-commands /etc/sudoers.d/eaas-pwdless-commands
+RUN chmod 440 /etc/sudoers.d/eaas-pwdless-commands
 
 #apache config
 COPY files/apache-sites /etc/apache2/sites-available/
