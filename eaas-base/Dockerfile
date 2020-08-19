@@ -203,4 +203,10 @@ WORKDIR /libexec
 run git clone -b user-policy --single-branch https://gitlab.com/emulation-as-a-service/get-s3-token.git && cd get-s3-token && npm install
 run curl -O https://dl.min.io/client/mc/release/linux-amd64/mc && chmod +x mc 
 WORKDIR /
-  
+
+# workaround for image-conversion problems caused by our patched qemu-img
+RUN mkdir -p /eaas/workarounds/qemu-utils \
+    && chown --recursive bwfla:bwfla /eaas/workarounds \
+    && cd /tmp && apt-get download qemu-utils \
+    && dpkg -x qemu-utils* /eaas/workarounds/qemu-utils \
+    && rm qemu-utils*
