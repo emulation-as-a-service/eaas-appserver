@@ -200,7 +200,7 @@ run curl -L -o /tmp/vde-slirp.zip https://gitlab.com/emulation-as-a-service/slir
 	unzip /tmp/vde-slirp.zip
 
 WORKDIR /libexec
-run git clone -b master --single-branch https://gitlab.com/emulation-as-a-service/get-s3-token.git && cd get-s3-token && npm install
+run git clone -b main --single-branch https://gitlab.com/emulation-as-a-service/get-s3-token.git && cd get-s3-token && npm install
 run curl -O https://dl.min.io/client/mc/release/linux-amd64/mc && chmod +x mc 
 WORKDIR /
 
