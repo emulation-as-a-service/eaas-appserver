@@ -1,0 +1,31 @@
+#!/bin/sh
+
+echo Call this as "$0" '$EXACT_SUBDOMAIN_FOR_WHICH_NS_RECORD_WAS_CREATED'
+
+set -x
+set -eu
+
+. "${EAAS_CONFIG_PATH}/dns-env"
+
+domain="${1:-}"
+domain="${domain%.}"
+
+if test "$domain"; then
+
+curl -f -w "\n" -X PATCH -H "X-API-Key: ${EAAS_DNS_APIKEY}" \
+    "${EAAS_DNS_SERVER}/api/v1/servers/localhost/zones/=2E" -d \
+    '{"rrsets": [{"changetype": "REPLACE", "name": "'"${domain}."'", "type": "SOA",
+    "ttl": 3600, "records": [{"content": 
+    "'"${domain}"'. hostmaster.eaas.uni-freiburg.de. 20190628 10800 3600 604800 3600",
+    "disabled": false}]}]}'
+
+sleep 10
+
+dig +trace @1.0.0.1 SOA "$domain"
+
+else
+
+curl -f -w "\n" -X GET -H "X-API-Key: ${EAAS_DNS_APIKEY}" \
+   "${EAAS_DNS_SERVER}/api/v1/servers/localhost/zones/=2E" 
+
+fi

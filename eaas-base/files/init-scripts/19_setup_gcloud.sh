@@ -9,7 +9,8 @@ test -f "${srcpath}" || exit 0
 
 test "${EAAS_DNS_PROVIDER}" = 'gcp' || exit 0
 
-DEBIAN_FRONTEND=noninteractive apt-get install -y google-cloud-sdk
+export DEBIAN_FRONTEND=noninteractive
+apt-get update && apt-get install -y google-cloud-sdk
 
 __activate_service_account() {
 	local user="$1"
