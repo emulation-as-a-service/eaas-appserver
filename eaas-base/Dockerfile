@@ -211,6 +211,6 @@ RUN mkdir -p /eaas/workarounds/qemu-utils \
     && dpkg -x qemu-utils* /eaas/workarounds/qemu-utils \
     && rm qemu-utils*
 
-run curl -O /usr/local/bin/fuseqemu https://gitlab.com/rafaelgieschke/fuseqemu/-/jobs/artifacts/master/raw/fuseqemu/fuseqemu?job=build
+run curl -L -o /usr/local/bin/fuseqemu "https://gitlab.com/rafaelgieschke/fuseqemu/-/jobs/artifacts/master/raw/fuseqemu/fuseqemu?job=build"
 
-run git clone https://gitlab.com/emulation-as-a-service/experiments/eaas-qcow-runner.git /libexec/qcow-runner
+run git clone -b integration https://gitlab.com/emulation-as-a-service/experiments/eaas-qcow-runner.git /libexec/qcow-runner
