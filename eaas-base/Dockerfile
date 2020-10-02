@@ -210,3 +210,5 @@ RUN mkdir -p /eaas/workarounds/qemu-utils \
     && cd /tmp && apt-get download qemu-utils \
     && dpkg -x qemu-utils* /eaas/workarounds/qemu-utils \
     && rm qemu-utils*
+
+run curl -O /usr/local/bin/fuseqemu https://gitlab.com/rafaelgieschke/fuseqemu/-/jobs/artifacts/master/raw/fuseqemu/fuseqemu?job=build
