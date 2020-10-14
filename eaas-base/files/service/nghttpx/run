@@ -32,4 +32,4 @@ EOF
   update-ca-certificates
 fi
 
-exec /usr/sbin/nghttpx
+exec /usr/sbin/nghttpx --workers="$(nproc)"
