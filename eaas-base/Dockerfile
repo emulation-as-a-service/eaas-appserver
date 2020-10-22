@@ -62,6 +62,7 @@ cpu-checker \
 libprotobuf-c1 \
 iproute2 \
 ghostscript \
+inotify-tools \
 gstreamer1.0-plugins-base \
 gstreamer1.0-plugins-good \
 gstreamer1.0-plugins-bad \
@@ -210,3 +211,8 @@ RUN mkdir -p /eaas/workarounds/qemu-utils \
     && cd /tmp && apt-get download qemu-utils \
     && dpkg -x qemu-utils* /eaas/workarounds/qemu-utils \
     && rm qemu-utils*
+
+run curl -L -o /usr/local/bin/fuseqemu "https://gitlab.com/rafaelgieschke/fuseqemu/-/jobs/artifacts/master/raw/fuseqemu/fuseqemu?job=build"
+run chmod +x /usr/local/bin/fuseqemu
+
+run git clone -b integration https://gitlab.com/emulation-as-a-service/experiments/eaas-qcow-runner.git /libexec/qcow-runner
