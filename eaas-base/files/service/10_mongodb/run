@@ -1,2 +1,8 @@
-#!/bin/bash
-exec /usr/bin/mongod --dbpath /eaas/server-data/db --smallfiles
+#!/bin/sh
+
+dbpath='/eaas/server-data/db'
+
+chown -R bwfla:bwfla "${dbpath}"
+exec /sbin/setuser bwfla /usr/bin/mongod \
+	--dbpath "${dbpath}" \
+	--smallfiles
