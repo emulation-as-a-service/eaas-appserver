@@ -7,8 +7,8 @@ if [ "$1" == "create" ] || [ "$1" == "rebase" ]; then
 # test if last argument was a file
     if [ -f "${@: -1}" ]; then
         truncate --size="$((($(stat --format=%s "${@: -1}") + 511) / 512 * 512))" "${@: -1}"
-    elif [ -f "${@: -2}" ]; then
-        truncate --size="$((($(stat --format=%s "${@: -2:1}") + 511) / 512 * 512))" "${@: -2}"
+    elif [ -f "${@: -2:1}" ]; then
+        truncate --size="$((($(stat --format=%s "${@: -2:1}") + 511) / 512 * 512))" "${@: -2:1}"
     else
         echo "unexpected error: file not found"
         exit 1
