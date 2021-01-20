@@ -157,6 +157,10 @@ RUN cd /tmp/packages && dpkg -i \
   && cp -r -v ./build/usr/* /usr \
   && rm -r /tmp/packages
 
+COPY --from=eaas/qemu-utils /usr/local/bin/qemu-nbd /usr/bin/
+COPY --from=eaas/qemu-utils /usr/local/bin/qemu-img /usr/bin/_qemu-img
+
+
 run curl -o /libexec/eaas-proxy-download.zip -L https://gitlab.com/emulation-as-a-service/eaas-proxy/-/jobs/248331762/artifacts/download \
   && cd /libexec \
   && unzip eaas-proxy-download.zip \
@@ -205,14 +209,7 @@ run git clone -b main --single-branch https://gitlab.com/emulation-as-a-service/
 run curl -O https://dl.min.io/client/mc/release/linux-amd64/mc && chmod +x mc 
 WORKDIR /
 
-# workaround for image-conversion problems caused by our patched qemu-img
-RUN mkdir -p /eaas/workarounds/qemu-utils \
-    && chown --recursive bwfla:bwfla /eaas/workarounds \
-    && cd /tmp && apt-get download qemu-utils \
-    && dpkg -x qemu-utils* /eaas/workarounds/qemu-utils \
-    && rm qemu-utils*
-
-run curl -L -o /usr/local/bin/fuseqemu "https://gitlab.com/rafaelgieschke/fuseqemu/-/jobs/artifacts/master/raw/fuseqemu/fuseqemu?job=build"
-run chmod +x /usr/local/bin/fuseqemu
-
-run git clone -b integration https://gitlab.com/emulation-as-a-service/experiments/eaas-qcow-runner.git /libexec/qcow-runner
+run curl -L -o /tmp/fuseqemu.zip https://gitlab.com/emulation-as-a-service/fuseqemu/-/jobs/artifacts/master/download?job=build && \
+ mkdir -p /libexec && \
+ cd /libexec && \
+ unzip /tmp/fuseqemu.zip

@@ -24,6 +24,9 @@ services:
   vde:
     image: eaas/vde
     build: common/vde-slirp
+  qemu-utils:
+    image: eaas/qemu-utils
+    build: common/eaas-qemu-upstream
   base:
     image: eaas/eaas-base
     build: eaas-base
@@ -36,6 +39,7 @@ services:
       - fake-clock
       - netfilter
       - vde
+      - qemu-utils
   eaas-appserver:
     image: eaas/eaas-appserver
     build: eaas-appserver
