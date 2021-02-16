@@ -34,12 +34,20 @@ __gcp_execute() {
         --zone "${EAAS_DNS_ZONE}"
 }
 
+__cf_execute() {
+    . "$(dirname -- "$0")/cf.lib.sh"
+    cf_delete_record "${domain}" "A"
+
+    sleep 10  # Wait for transaction to finish
+}
 
 case "${EAAS_DNS_PROVIDER}" in
     powerdns)
         __powerdns_execute ;;
     gcp)
         __gcp_execute ;;
+    cf)
+        __cf_execute ;;
     *)
         echo "Unknown DNS provider: ${EAAS_DNS_PROVIDER}"
         exit 1 ;;
