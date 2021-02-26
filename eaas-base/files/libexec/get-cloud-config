@@ -40,6 +40,8 @@ write_files:
   owner: bwfla:bwfla
   content: |
     ws.imagearchive: https://${DOMAIN}
+    rest.blobstore: https://${DOMAIN}/blobstore/api/v1/blobs
+
 #password: eaas
 #chpasswd: {expire: false}
 EOF
