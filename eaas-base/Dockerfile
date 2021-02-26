@@ -102,9 +102,6 @@ COPY files/nghttpx/ /etc/nghttpx/
 # dns & ssl scripts
 COPY files/libexec/ /libexec/
 
-# copy tools and scripts
-COPY files/binaries/ /usr/bin/
-
 #lklfuse
 copy --from=registry.gitlab.com/emulation-as-a-service/lklfuse /opt/lkl/lklfuse /usr/bin/
 #copy --from=registry.gitlab.com/emulation-as-a-service/lklfuse:chown-symlink /opt/lkl/lklfuse /usr/bin/
@@ -160,6 +157,7 @@ RUN cd /tmp/packages && dpkg -i \
 COPY --from=eaas/qemu-utils /usr/local/bin/qemu-nbd /usr/bin/
 COPY --from=eaas/qemu-utils /usr/local/bin/qemu-img /usr/bin/_qemu-img
 
+COPY files/binaries/ /usr/bin/
 
 run curl -o /libexec/eaas-proxy-download.zip -L https://gitlab.com/emulation-as-a-service/eaas-proxy/-/jobs/248331762/artifacts/download \
   && cd /libexec \
