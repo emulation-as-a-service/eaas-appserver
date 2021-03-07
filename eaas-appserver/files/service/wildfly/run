@@ -10,26 +10,14 @@ fi
 # [2] https://gitlab.com/openslx/eaas-docker/-/merge_requests/9#note_377872521
 set -f
 
-if [ "$SSL_PROXY" == "true" ]; then
-        if [ -z "$EAAS_PROXYPORT" ]; then
-                EAAS_PROXYPORT=443
-        fi
-        SSL_DEFINES="-Deaas.urischeme=https -Deaas.proxyport=$EAAS_PROXYPORT"
-else
-        if [ -z "$EAAS_PROXYPORT" ]; then
-                EAAS_PROXYPORT=8080
-        fi
-        SSL_DEFINES="-Deaas.urischeme=http -Deaas.proxyport=$EAAS_PROXYPORT"
-fi
-
 # NOTE: JBOSS server should be started in background, or else
 #       standlone.sh will not be able to shutdown it cleanly!
 export LAUNCH_JBOSS_IN_BACKGROUND='true'
 
 logger 'Starting wildfly-server...'
 if [ "$RUN_AS_ROOT" == "true" ]; then
-	exec /home/bwfla/bw-fla-server/bin/standalone.sh ${EAAS_SERVER_OPTS} $SSL_DEFINES -b=0.0.0.0
+	exec /home/bwfla/bw-fla-server/bin/standalone.sh ${EAAS_SERVER_OPTS} -b=0.0.0.0
 else
 	chown -R bwfla /home/bwfla/bw-fla-server/standalone/log
-	exec /sbin/setuser bwfla /home/bwfla/bw-fla-server/bin/standalone.sh ${EAAS_SERVER_OPTS} $SSL_DEFINES -b=0.0.0.0
+	exec /sbin/setuser bwfla /home/bwfla/bw-fla-server/bin/standalone.sh ${EAAS_SERVER_OPTS} -b=0.0.0.0
 fi
