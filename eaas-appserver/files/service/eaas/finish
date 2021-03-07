@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if test "$1" -ne 0; then
+	logger 'Deploying eaas-server failed!'
+fi
+
+# prevent automatic restarts!
+exec sv down eaas

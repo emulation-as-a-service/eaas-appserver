@@ -1,7 +1,0 @@
-#!/bin/sh
-mongo eaas  --eval 'db.classificationCache.createIndex( { "classificationResult.objectId": 1 }, { unique: true } )'
-mongo eaas  --eval 'db.emilEnv.createIndex( { "envId": 1 }, { unique: true, sparse: true})'
-mongo eaas  --eval 'db.metadata.createIndex( { "id": 1 }, { unique: true, sparse: true})'
-
-
-

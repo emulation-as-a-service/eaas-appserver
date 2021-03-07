@@ -1,34 +1,21 @@
-#!/bin/bash
+#!/bin/sh
 
-if [ ! -d "/home/bwfla/log" ]; then
-  /sbin/setuser bwfla mkdir -p /home/bwfla/log
-fi
+# ensure deps are running!
+sv -w 120 up mongodb || exit 1
+sv -w 120 up wildfly || exit 1
 
+logger 'Preparing mongo-db...'
+# TODO: move index creation to Java code, if possible!
+mongo eaas  --eval 'db.classificationCache.createIndex( { "classificationResult.objectId": 1 }, { unique: true } )'
+# TODO: all following databases are legacy and should be removed!
+mongo eaas  --eval 'db.emilEnv.createIndex( { "emilEnvironment.envId": 1 }, { unique: true, sparse: true})'
+mongo eaas  --eval 'db.emilEnv.createIndex( { "emilObjectEnvironment.envId": 1 }, { unique: true, sparse: true})'
+mongo eaas  --eval 'db.emilEnv.createIndex( { "emilSessionEnvironment.envId": 1 }, { unique: true, sparse: true})'
+mongo eaas  --eval 'db.emilEnv.createIndex( { "envId": 1 }, { unique: true, sparse: true})'
+mongo eaas  --eval 'db.metadata.createIndex( { "id": 1 }, { unique: true, sparse: true})'
 
-# disable pathname expansion. for more info see comments [1] and [2]:
-# [1] https://gitlab.com/openslx/eaas-docker/-/merge_requests/9#note_377867812
-# [2] https://gitlab.com/openslx/eaas-docker/-/merge_requests/9#note_377872521
-set -f
-
-if [ "$SSL_PROXY" == "true" ]; then
-        if [ -z "$EAAS_PROXYPORT" ]; then
-                EAAS_PROXYPORT=443
-        fi
-        SSL_DEFINES="-Deaas.urischeme=https -Deaas.proxyport=$EAAS_PROXYPORT"
-else
-        if [ -z "$EAAS_PROXYPORT" ]; then
-                EAAS_PROXYPORT=8080
-        fi
-        SSL_DEFINES="-Deaas.urischeme=http -Deaas.proxyport=$EAAS_PROXYPORT"
-fi
-
-# NOTE: JBOSS server should be started in background, or else
-#       standlone.sh will not be able to shutdown it cleanly!
-export LAUNCH_JBOSS_IN_BACKGROUND='true'
-
-if [ "$RUN_AS_ROOT" == "true" ]; then
-	exec /home/bwfla/bw-fla-server/bin/standalone.sh ${EAAS_SERVER_OPTS} $SSL_DEFINES -b=0.0.0.0
-else
-	chown -R bwfla /home/bwfla/bw-fla-server/standalone/log
-	exec /sbin/setuser bwfla /home/bwfla/bw-fla-server/bin/standalone.sh ${EAAS_SERVER_OPTS} $SSL_DEFINES -b=0.0.0.0
-fi
+logger 'Deploying eaas-server...'
+echo -n "" > /home/bwfla/bw-fla-server/bin/jboss-cli-logging.properties
+exec /home/bwfla/bw-fla-server/bin/jboss-cli.sh \
+	--connect \
+	--command="deploy --force /eaas/deployments/eaas-server.ear"
