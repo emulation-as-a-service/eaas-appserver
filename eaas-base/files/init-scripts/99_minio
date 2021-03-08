@@ -1,12 +1,19 @@
-#!/bin/bash 
+#!/bin/sh
 
-if [ ! -z "$MINIO_ADMIN_KEY" ] && [ ! -z "$MINIO_ADMIN_SECRET" ] && [ ! -z "$MINIO_USER_KEY" ] && [ ! -z "$MINIO_USER_SECRET" ]
-then
-	/libexec/mc alias set minio http://minio:9000 "$MINIO_ADMIN_KEY" "$MINIO_ADMIN_SECRET" 
-	# user=$(/libexec/mc admin --json user list minio | jq .accessKey)
-        /libexec/mc admin user add minio "$MINIO_USER_KEY" "$MINIO_USER_SECRET"
-	#user=$(/libexec/mc admin --json user list minio | jq .accessKey)
-	/libexec/mc mb minio/user-data
-	/libexec/mc admin policy set minio readwrite user="$MINIO_USER_KEY"
+if [ -z "${MINIO_ADMIN_KEY}" ]; then
+	logger 'Skipping minio setup!'
+	exit 0
 fi
 
+set -u
+
+logger 'Setting up minio...'
+/libexec/mc alias set minio http://minio:9000 "${MINIO_ADMIN_KEY}" "${MINIO_ADMIN_SECRET}"
+/libexec/mc admin user add minio "${MINIO_USER_KEY}" "${MINIO_USER_SECRET}"
+/libexec/mc admin policy set minio readwrite user="${MINIO_USER_KEY}"
+/libexec/mc policy set-json "${MINIO_ARCHIVE_POLICY_FILE}" minio/image-archive
+
+logger 'Creating local buckets...'
+/libexec/mc mb --ignore-existing \
+	minio/image-archive \
+	minio/user-data
