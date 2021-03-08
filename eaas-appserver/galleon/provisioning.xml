@@ -107,6 +107,7 @@
 				<param name="socket-binding" value="http"/>
 				<param name="enable-http2" value="true"/>
 				<param name="max-post-size" value="107374182400"/>
+				<param name="proxy-address-forwarding" value="true"/>
 			</feature>
 			<feature spec="subsystem.undertow.server.https-listener">
 				<param name="server" value="default-server"/>
@@ -180,9 +181,6 @@
 		<feature spec="subsystem.webservices">
 			<!-- custom webservices config -->
 			<param name="modify-wsdl-address" value="true"/>
-			<param name="wsdl-uri-scheme" value="${eaas.urischeme}"/>
-			<param name="wsdl-secure-port" value="${eaas.proxyport}"/>
-			<param name="wsdl-port" value="${eaas.proxyport}"/>
 			<feature spec="subsystem.webservices.client-config">
 				<param name="client-config" value="Standard-Client-Config"/>
 			</feature>
