@@ -211,5 +211,3 @@ run curl -L -o /tmp/fuseqemu.zip https://gitlab.com/emulation-as-a-service/fuseq
  mkdir -p /libexec && \
  cd /libexec && \
  unzip /tmp/fuseqemu.zip
-
- RUN curl -o /sbin/setuser https://raw.githubusercontent.com/phusion/baseimage-docker/master/image/bin/setuser && chmod +x /sbin/setuser
