@@ -13,6 +13,9 @@ if test -f "${user_crt}"; then
   printf '\nsubcert=%s:%s\n' "${user_key}" "${user_crt}" >> "${dstdir}/nghttpx.conf"
 fi
 
+# HACK: Do not create a new fake certificate if one already exists
+# as update-ca-certificates will not update Java's CA certificate store otherwise.
+if ! test -e "${server_crt}"; then
 openssl req -x509 \
   -newkey rsa:4096 -days 10000 -nodes \
   -keyout "${server_key}" -out "${server_crt}" \
@@ -26,6 +29,8 @@ commonName=localhost
 subjectAltName=DNS:localhost,DNS:eaas
 basicConstraints=critical,CA:false
 EOF
+fi
+
 ls -l "${server_crt}"
 openssl x509 -in "${server_crt}" -text
 ln -s /etc/nghttpx/server.crt /usr/local/share/ca-certificates/localhost-eaas.crt || true
