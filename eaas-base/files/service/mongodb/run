@@ -4,7 +4,7 @@ dbpath='/eaas/server-data/db'
 logpath='/home/bwfla/bw-fla-server/standalone/log/mongodb.log'
 
 chown -R bwfla:bwfla "${dbpath}"
-exec /sbin/setuser bwfla /usr/bin/mongod \
+exec runuser -u bwfla -- /usr/bin/mongod \
 	--setParameter diagnosticDataCollectionEnabled=false \
 	--serviceExecutor adaptive \
 	--dbpath "${dbpath}" \

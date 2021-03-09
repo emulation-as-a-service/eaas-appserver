@@ -1,10 +1,20 @@
 # create eaas-base
 # using: https://github.com/phusion/baseimage-docker
 
-FROM phusion/baseimage:0.11
-CMD ["/sbin/my_init"]
+FROM ubuntu:18.04
 
 RUN apt-get update && apt-get upgrade -y -o Dpkg::Options::="--force-confdef" && apt-get clean && apt-get autoremove
+
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes \
+    runit \
+    cron \
+    curl \
+    gnupg \
+    software-properties-common \
+    &&:
+
+COPY init /init
+CMD ["/init"]
 
 #siegfried
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 379CE192D401AB61

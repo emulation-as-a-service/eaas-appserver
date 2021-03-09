@@ -1,7 +1,7 @@
 #!/bin/sh
 
 __gpg_import() {
-    sudo -u bwfla gpg --import
+    runuser -u bwfla -- gpg --import
 }
 
 # import public key for error-reporting

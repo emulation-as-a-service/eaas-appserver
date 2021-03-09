@@ -1,9 +1,8 @@
 #!/bin/bash
 
 if [ ! -d "/home/bwfla/log" ]; then
-  /sbin/setuser bwfla mkdir -p /home/bwfla/log
+  runuser -u bwfla -- mkdir -p /home/bwfla/log
 fi
-
 
 # disable pathname expansion. for more info see comments [1] and [2]:
 # [1] https://gitlab.com/openslx/eaas-docker/-/merge_requests/9#note_377867812
@@ -19,5 +18,5 @@ if [ "$RUN_AS_ROOT" == "true" ]; then
 	exec /home/bwfla/bw-fla-server/bin/standalone.sh ${EAAS_SERVER_OPTS} -b=0.0.0.0
 else
 	chown -R bwfla /home/bwfla/bw-fla-server/standalone/log
-	exec /sbin/setuser bwfla /home/bwfla/bw-fla-server/bin/standalone.sh ${EAAS_SERVER_OPTS} -b=0.0.0.0
+	exec runuser -u bwfla -- /home/bwfla/bw-fla-server/bin/standalone.sh ${EAAS_SERVER_OPTS} -b=0.0.0.0
 fi
