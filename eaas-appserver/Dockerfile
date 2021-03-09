@@ -14,6 +14,5 @@ RUN chown -R bwfla:bwfla ./wildfly
 
 
 FROM eaas/eaas-base
-CMD ["/sbin/my_init"]
 COPY --from=wildfly-build /var/work/wildfly/ /home/bwfla/bw-fla-server/
 COPY files/service /etc/service/
