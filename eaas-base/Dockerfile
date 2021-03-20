@@ -221,3 +221,8 @@ run curl -L -o /tmp/fuseqemu.zip https://gitlab.com/emulation-as-a-service/fuseq
  mkdir -p /libexec && \
  cd /libexec && \
  unzip /tmp/fuseqemu.zip
+
+WORKDIR /tmp
+RUN curl -L -O https://github.com/google/go-containerregistry/releases/latest/download/go-containerregistry_Linux_x86_64.tar.gz && tar xf  go-containerregistry_Linux_x86_64.tar.gz && cp crane /usr/local/bin
+
+WORKDIR /
