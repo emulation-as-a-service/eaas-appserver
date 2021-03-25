@@ -25,7 +25,8 @@ cf_find_id() {
 }
 
 cf_format_record() {
-    jq -n '$ARGS.named' --arg name "$1" --arg type "$2" \
+    # HACK: jq >= 1.6 (Ubuntu 18.04 has jq 1.5) would use `jq -n '$ARGS.named'`
+    jq -n '{$name,$type,$content,$ttl,$proxied}' --arg name "$1" --arg type "$2" \
         --arg content "$3" --argjson ttl "$4" --argjson proxied false
 }
 
