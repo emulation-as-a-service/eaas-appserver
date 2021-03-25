@@ -225,4 +225,6 @@ run curl -L -o /tmp/fuseqemu.zip https://gitlab.com/emulation-as-a-service/fuseq
 WORKDIR /tmp
 RUN curl -L -O https://github.com/google/go-containerregistry/releases/latest/download/go-containerregistry_Linux_x86_64.tar.gz && tar xf  go-containerregistry_Linux_x86_64.tar.gz && cp crane /usr/local/bin
 
+COPY --from=registry.gitlab.com/emulation-as-a-service/external-dns-util /bin/external-dns /usr/bin/
+
 WORKDIR /
