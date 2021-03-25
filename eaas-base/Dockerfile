@@ -81,6 +81,7 @@ gstreamer1.0-libav \
 gstreamer1.0-tools \
 gstreamer1.0-pulseaudio \
 nodejs \
+libnet-dev python-yaml libaio-dev \
     && apt-get clean && apt-get autoremove
 
 RUN sed -i 's/#user_allow_other/user_allow_other/' /etc/fuse.conf
