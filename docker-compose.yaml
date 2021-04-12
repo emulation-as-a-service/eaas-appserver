@@ -27,6 +27,9 @@ services:
   qemu-utils:
     image: eaas/qemu-utils
     build: common/eaas-qemu-upstream
+  siegfried: 
+    image: eaas/siegfried
+    build: common/siegfried
   base:
     image: eaas/eaas-base
     build: eaas-base
@@ -40,6 +43,7 @@ services:
       - netfilter
       - vde
       - qemu-utils
+      - siegfried
   eaas-appserver:
     image: eaas/eaas-appserver
     build: eaas-appserver

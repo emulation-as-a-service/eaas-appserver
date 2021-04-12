@@ -16,10 +16,6 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --force-
 COPY init /init
 CMD ["/init"]
 
-#siegfried
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 379CE192D401AB61
-run echo "deb http://dl.bintray.com/siegfried/debian wheezy main" | tee -a /etc/apt/sources.list
-
 RUN add-apt-repository ppa:projectatomic/ppa
 
 # gcloud sdk
@@ -64,7 +60,6 @@ rsync \
 openjdk-11-jre-headless \
 socat \
 mongodb \
-siegfried \
 skopeo \
 wget \
 squashfs-tools \
@@ -184,6 +179,7 @@ COPY --from=eaas/emucon-tools /emucon-tools /home/bwfla/emucon-tools
 COPY --from=eaas/netfilter /usr/local /usr/local
 COPY --from=eaas/fake-clock /fake-clock/LD_PRELOAD_clock_gettime.so /usr/local/lib/
 COPY --from=eaas/test-sock-diag /src/test-sock-diag /usr/local/bin/
+COPY --from=eaas/siegfried /root/go/bin/sf /usr/local/bin/
 
 ENV PATH="/home/bwfla/emucon-tools/runtime/bin/:${PATH}"
 RUN /home/bwfla/emucon-tools/install.sh --destination /usr/local -u bwfla \
