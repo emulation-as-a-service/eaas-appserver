@@ -7,7 +7,6 @@ set -eu
 domain="${1%.}"
 ip="$2"
 
-
 __powerdns_execute() {
     curl -f -w "\n" -X PATCH -H "X-API-Key: ${EAAS_DNS_APIKEY}" \
         "${EAAS_DNS_SERVER}/api/v1/servers/localhost/zones/=2E" -d \
@@ -36,7 +35,7 @@ __gcp_execute() {
         --transaction-file "${txnfile}" \
         --zone "${EAAS_DNS_ZONE}"
 
-    sleep 10  # Wait for transaction to finish
+    sleep 30  # Wait for transaction to finish
 }
 
 __cf_execute() {
@@ -62,8 +61,9 @@ echo ''
 
 inum=12
 idelay=10
+
 echo "Waiting for DNS record (max. ${inum}*${idelay}sec):"
-while ! nslookup "${domain}" > /dev/null ; do
+while ! dig +short +trace A "${domain}" @1.0.0.1 | grep -q '^A ' > /dev/null ; do
     inum=$((inum - 1))
     if [ "${inum}" -eq 0 ] ; then
         echo "-> failure!"
