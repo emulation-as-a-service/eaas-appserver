@@ -202,6 +202,11 @@
 				<param name="endpoint-config" value="Recording-Endpoint-Config"/>
 			</feature>
 		</feature>
+		<feature spec="system-property">
+			<!-- increase timeout to support long-running initialization -->
+			<param name="system-property" value="jboss.as.management.blocking.timeout"/>
+			<param name="value" value="3600"/>
+		</feature>
 		<layers>
 			<include name="cdi"/>
 			<include name="jaxrs"/>
