@@ -223,4 +223,9 @@ RUN curl -fL https://github.com/google/go-containerregistry/releases/latest/down
 
 COPY --from=registry.gitlab.com/emulation-as-a-service/external-dns-util /bin/external-dns /usr/bin/
 
+run curl -O https://downloads.rclone.org/rclone-current-linux-amd64.zip && \
+	unzip rclone-current-linux-amd64.zip && \
+	cp rclone-*-linux-amd64/rclone /usr/bin \
+	rm -rf rclone*
+
 WORKDIR /
