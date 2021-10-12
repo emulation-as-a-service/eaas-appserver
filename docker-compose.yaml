@@ -52,8 +52,3 @@ services:
   eaas-proxy:
     image: eaas/eaas-proxy
     build: proxy-container
-  citar:
-    image: eaas/citar
-    build: citar-container
-    depends_on:
-      - base
