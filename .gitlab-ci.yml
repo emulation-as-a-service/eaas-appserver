@@ -12,6 +12,7 @@ build:
   script:
   - export CI_APPLICATION_REPOSITORY="$CI_REGISTRY_IMAGE"
   - export CI_APPLICATION_TAG="git-$CI_COMMIT_SHA"
+  - export CI_COMMIT_REF_SLUG="$(printf %s "$CI_COMMIT_REF_NAME" | tr -c 'a-zA-Z0-9_.' -)"
 
   - docker-compose build
 
