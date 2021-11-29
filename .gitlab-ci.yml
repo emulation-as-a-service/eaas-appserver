@@ -28,14 +28,19 @@ build:
 
   - export CI_REGISTRY=docker.io
   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-  
+  - docker login -u "$GITLAB_REGISTRY_USER" -p "$GITLAB_REGISTRY_PASSWORD" "registry.gitlab.com"
+
   - if test "$CI_COMMIT_REF_SLUG" = "master"; then docker push "eaas/eaas-appserver:latest"; fi
   - docker tag eaas/eaas-appserver "eaas/eaas-appserver:$CI_COMMIT_REF_SLUG" 
+  - docker tag eaas/eaas-appserver "registry.gitlab.com/emulation-as-a-service/eaas/eaas-appserver:$CI_COMMIT_REF_SLUG" 
   - docker push "eaas/eaas-appserver:$CI_COMMIT_REF_SLUG"
+  - docker push "registry.gitlab.com/emulation-as-a-service/eaas/eaas-appserver:$CI_COMMIT_REF_SLUG"
 
   - if test "$CI_COMMIT_REF_SLUG" = "master"; then docker push "eaas/eaas-proxy:latest"; fi
   - docker tag eaas/eaas-proxy "eaas/eaas-proxy:$CI_COMMIT_REF_SLUG"
+  - docker tag eaas/eaas-proxy "registry.gitlab.com/emulation-as-a-service/eaas/eaas-proxy:$CI_COMMIT_REF_SLUG"
   - docker push "eaas/eaas-proxy:$CI_COMMIT_REF_SLUG"
+  - docker push "registry.gitlab.com/emulation-as-a-service/eaas/eaas-proxy:$CI_COMMIT_REF_SLUG"
   
   # - if test "$CI_COMMIT_REF_SLUG" = "master"; then docker push "eaas/citar:latest"; fi
   # - docker tag eaas/citar "eaas/citar:$CI_COMMIT_REF_SLUG" 
