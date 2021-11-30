@@ -1,0 +1,12 @@
+#!/bin/sh -eu
+
+: "${containerId-}"
+: "${userId-}"
+: "${groupId-}"
+: "${vdeSocket}"
+
+if test "${containerId-}"; then
+  exec sudo runc exec --user "$userId:$groupId" "$containerId" vde_plug "$vdeSocket"
+else
+  exec vde_plug "$vdeSocket"
+fi
