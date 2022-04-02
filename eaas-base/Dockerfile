@@ -186,7 +186,7 @@ ENV PATH="/home/bwfla/emucon-tools/runtime/bin/:${PATH}"
 RUN /home/bwfla/emucon-tools/install.sh --destination /usr/local -u bwfla \
     &&  /home/bwfla/emucon-tools/installer/install-deps.sh
 
-RUN curl -k https://www.nationalarchives.gov.uk/documents/DROID_SignatureFile_V97.xml -o /eaas/pronom/DROID_SignatureFile.xml
+RUN curl -kL https://www.nationalarchives.gov.uk/documents/DROID_SignatureFile_V97.xml -o /eaas/pronom/DROID_SignatureFile.xml
 RUN chmod 755 /eaas/pronom/DROID_SignatureFile.xml
 
 add files/defaults /home/bwfla/defaults
