@@ -180,14 +180,14 @@ COPY --from=eaas/emucon-tools /emucon-tools /home/bwfla/emucon-tools
 COPY --from=eaas/netfilter /usr/local /usr/local
 COPY --from=eaas/fake-clock /fake-clock/LD_PRELOAD_clock_gettime.so /usr/local/lib/
 COPY --from=eaas/test-sock-diag /src/test-sock-diag /usr/local/bin/
-COPY --from=eaas/siegfried /root/go/bin/sf /usr/local/bin/
+
+RUN url="https://github.com/richardlehane/siegfried/releases/download/v1.9.2/siegfried_1.9.2-1_amd64.deb" \
+  && cd /tmp && curl -Lo package.deb "$url" && dpkg -i package.deb && rm package.deb
+RUN ln -s /usr/share/siegfried/DROID_SignatureFile_V*.xml /eaas/pronom/DROID_SignatureFile.xml
 
 ENV PATH="/home/bwfla/emucon-tools/runtime/bin/:${PATH}"
 RUN /home/bwfla/emucon-tools/install.sh --destination /usr/local -u bwfla \
     &&  /home/bwfla/emucon-tools/installer/install-deps.sh
-
-RUN curl -kL https://www.nationalarchives.gov.uk/documents/DROID_SignatureFile_V97.xml -o /eaas/pronom/DROID_SignatureFile.xml
-RUN chmod 755 /eaas/pronom/DROID_SignatureFile.xml
 
 add files/defaults /home/bwfla/defaults
 

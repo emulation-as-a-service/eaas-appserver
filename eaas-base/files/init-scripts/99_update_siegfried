@@ -1,5 +1,0 @@
-#!/bin/sh
-
-# update siegfried's runtime data for user
-# under which the eaas-server is executed
-runuser -u bwfla -- /usr/local/bin/sf -update
