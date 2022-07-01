@@ -166,7 +166,7 @@ COPY --from=eaas/qemu-utils /usr/local/bin/qemu-img /usr/bin/_qemu-img
 
 COPY files/binaries/ /usr/bin/
 
-run curl -o /libexec/eaas-proxy-download.zip -L https://gitlab.com/emulation-as-a-service/eaas-proxy/-/jobs/248331762/artifacts/download \
+run curl -o /libexec/eaas-proxy-download.zip -L https://gitlab.com/emulation-as-a-service/eaas-proxy/-/jobs/artifacts/master/download/eaas-proxy/?job=build \
   && cd /libexec \
   && unzip eaas-proxy-download.zip \
   && mv eaas-proxy/eaas-proxy vdenode \
