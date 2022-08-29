@@ -13,5 +13,9 @@ run curl "https://download.qemu.org/qemu-7.0.0.tar.xz" | tar xJ --strip-componen
 # HACK: Allow long URLs as backing file names
 RUN sed -i '/backing_file/s/1023/(PATH_MAX-1)/' block/qcow2.c
 
+# HACK: Increase default timeout for CURL connections
+RUN file="block/curl.c"; script='/CURL_BLOCK_OPT_TIMEOUT_DEFAULT/s/5/60/'; \
+    sed -E -i.orig -- "$script" "$file" && ! diff -u -- "$file.orig" "$file"
+
 run ./configure  --prefix=/usr/local --disable-user --disable-system --enable-tools 
 run make install
