@@ -16,6 +16,7 @@ logger 'Setting up minio...'
 
 logger 'Creating local buckets...'
 /libexec/mc mb --ignore-existing \
+	minio/object-archive \
 	minio/image-archive \
 	minio/user-data
 
