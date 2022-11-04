@@ -28,6 +28,10 @@ RUN apt-get update && apt-get install -y \
 run git clone --single-branch --branch v3.15 https://github.com/checkpoint-restore/criu.git
 WORKDIR /criu
 
+# HACK: Fix <https://github.com/checkpoint-restore/criu/issues/1892>
+RUN file="criu/pie/parasite-vdso.c"; script='s/%zu/%zd/'; \
+        sed -E -i.orig -- "$script" "$file" && ! diff -u -- "$file.orig" "$file"
+
 ENV CC="ccache $CC" CCACHE_DIR=/tmp/.ccache CCACHE_NOCOMPRESS=1 $ENV1=yes
 
 RUN make mrproper && ccache -s && \
