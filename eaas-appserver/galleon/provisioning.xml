@@ -108,6 +108,7 @@
 				<param name="enable-http2" value="true"/>
 				<param name="max-post-size" value="107374182400"/>
 				<param name="proxy-address-forwarding" value="true"/>
+				<param name="tcp-keep-alive" value="true"/>
 			</feature>
 			<feature spec="subsystem.undertow.server.https-listener">
 				<param name="server" value="default-server"/>
