@@ -212,7 +212,9 @@ run curl -L -o /tmp/vde-slirp.zip https://gitlab.com/emulation-as-a-service/slir
 
 WORKDIR /libexec
 run git clone -b main --single-branch https://gitlab.com/emulation-as-a-service/get-s3-token.git && cd get-s3-token && npm install
-run curl -O https://dl.min.io/client/mc/release/linux-amd64/mc && chmod +x mc 
+# TODO: The latest `mc` version is currently not compatible
+# See: https://gitlab.com/emulation-as-a-service/eaas/-/issues/22
+run curl -o mc https://dl.min.io/client/mc/release/linux-amd64/archive/mc.RELEASE.2021-11-05T10-05-06Z && chmod +x mc
 WORKDIR /
 
 run curl -L -o /tmp/fuseqemu.zip https://gitlab.com/emulation-as-a-service/fuseqemu/-/jobs/artifacts/master/download?job=build && \
