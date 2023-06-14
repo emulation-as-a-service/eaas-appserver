@@ -45,3 +45,9 @@ write_files:
 #password: eaas
 #chpasswd: {expire: false}
 EOF
+
+if test -e /eaas/deployments/eaas-emucomp.ear; then cat << EOF
+runcmd:
+- curl -fL https://$BASEDOMAIN/deployments/$EAAS_DEPLOYMENT_API_TOKEN/eaas-emucomp.ear -o /eaas/deployments/eaas-server.ear
+EOF
+fi
