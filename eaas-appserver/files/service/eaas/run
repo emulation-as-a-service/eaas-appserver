@@ -1,7 +1,10 @@
 #!/bin/sh
 
 # ensure deps are running!
+# HACK: `sv` does not work if `.../supervise/ok` has not yet been created by `runsvdir`/`runsv`
+while ! test -e /etc/service/mongodb/supervise/ok; do sleep 1; done
 sv -w 120 up mongodb || exit 1
+while ! test -e /etc/service/wildfly/supervise/ok; do sleep 1; done
 sv -w 120 up wildfly || exit 1
 
 logger 'Preparing mongo-db...'
