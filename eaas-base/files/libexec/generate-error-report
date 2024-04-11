@@ -11,10 +11,10 @@ mkdir report
 cd report
 
 echo '--> Copying current config files...'
-cp -r -v /eaas/config .
+cp -r -v /eaas/config . || :
 
 echo '--> Copying current log files...'
-cp -r -v /home/bwfla/bw-fla-server/standalone/log/server.log .
+cp -r -v /home/bwfla/bw-fla-server/standalone/log/server.log . || :
 
 cd ..
 
