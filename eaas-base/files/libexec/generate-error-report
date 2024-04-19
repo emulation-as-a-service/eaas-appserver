@@ -10,8 +10,10 @@ cd "${workdir}"
 mkdir report
 cd report
 
-echo '--> Copying current config files...'
-cp -r -v /eaas/config . || :
+if test "${EAAS_ERROR_REPORT_INCLUDE_CONFIG:-}"; then
+	echo '--> Copying current config files...'
+	cp -r -v /eaas/config . || :
+fi
 
 echo '--> Copying current log files...'
 cp -r -v /home/bwfla/bw-fla-server/standalone/log/server.log . || :
