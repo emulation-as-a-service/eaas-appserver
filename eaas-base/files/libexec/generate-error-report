@@ -10,7 +10,7 @@ cd "${workdir}"
 mkdir report
 cd report
 
-if test "${EAAS_ERROR_REPORT_INCLUDE_CONFIG:-}"; then
+if test "${EAAS_ERROR_REPORT_INCLUDE_CONFIG:-}" == true; then
 	echo '--> Copying current config files...'
 	cp -r -v /eaas/config . || :
 fi
